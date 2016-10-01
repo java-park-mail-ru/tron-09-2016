@@ -1,7 +1,5 @@
 package ru.mail.park.main;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,15 +34,16 @@ public class RegistrationController {
         if (StringUtils.isEmpty(login)
                 || StringUtils.isEmpty(password)
                 || StringUtils.isEmpty(email)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
         final UserProfile existingUser = accountService.getUser(login);
         if (existingUser != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
 
-        accountService.addUser(login, password, email);
-        return ResponseEntity.ok(new SuccessResponse(login));
+        final UserProfile newUser = new UserProfile(login, password, email);
+        accountService.addUser(newUser);
+        return ResponseEntity.ok(new SuccessResponse(Long.toString(newUser.getID())));
     }
 
     @RequestMapping(path = "/api/session", method = RequestMethod.POST)
@@ -108,15 +107,15 @@ public class RegistrationController {
     }
 
     private static final class SuccessResponse {
-        private String login;
+        private String ID;
 
-        private SuccessResponse(String login) {
-            this.login = login;
+        private SuccessResponse(String ID) {
+            this.ID = ID;
         }
 
         @SuppressWarnings("unused")
         public String getLogin() {
-            return login;
+            return ID;
         }
     }
 
