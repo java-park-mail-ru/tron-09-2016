@@ -9,23 +9,19 @@ public class UserProfile {
     private static final AtomicLong ID_GENETATOR = new AtomicLong(0);
 
     private String login;
-    private String email;
     private String password;
+    private String email;
     private long ID;
 
-    public UserProfile(String login, String email, String password) {
+    public UserProfile(String login, String password, String email) {
         this.login = login;
-        this.email = email;
         this.password = password;
+        this.email = email;
         this.ID = ID_GENETATOR.getAndIncrement();
     }
 
     public String getLogin() {
         return login;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public String getPassword() {

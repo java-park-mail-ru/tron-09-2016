@@ -54,8 +54,11 @@ public class RegistrationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
         final UserProfile user = accountService.getUser(body.getLogin());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+        }
         if (user.getPassword().equals(body.getPassword())) {
-            return ResponseEntity.ok(new SuccessResponse(user.getLogin()));
+            return ResponseEntity.ok(new SuccessResponse(Long.toString(user.getID())));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
     }

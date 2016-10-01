@@ -15,9 +15,9 @@ public class AccountService {
     }
 
     public UserProfile getUser(String login) {
-        if (!userNameToUser.containsKey(login))
-            return null;
+        if (userNameToUser.containsKey(login))
+            return userNameToUser.get(login);
 
-        return userNameToUser.get(login);
+        return null;
     }
 }
