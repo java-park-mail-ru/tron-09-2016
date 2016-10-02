@@ -11,13 +11,13 @@ public class UserProfile {
     private String login;
     private String password;
     private String email;
-    private long ID;
+    private long id;
 
     public UserProfile(String login, String password, String email) {
         this.login = login;
         this.password = password;
         this.email = email;
-        this.ID = ID_GENETATOR.getAndIncrement();
+        this.id = ID_GENETATOR.getAndIncrement();
     }
 
     public String getLogin() {
@@ -29,6 +29,6 @@ public class UserProfile {
     }
 
     public long getID() {
-        return ID;
+        return id;
     }
 }

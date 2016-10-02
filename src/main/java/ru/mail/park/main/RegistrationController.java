@@ -24,7 +24,7 @@ public class RegistrationController {
     }
 
     @RequestMapping(path = "/api/user", method = RequestMethod.POST)
-    public ResponseEntity login(@RequestBody RegistrationRequest body,
+    public ResponseEntity registration(@RequestBody RegistrationRequest body,
                                 HttpSession httpSession) {
         final String sessionId = httpSession.getId();
 
@@ -46,28 +46,11 @@ public class RegistrationController {
         return ResponseEntity.ok("{\n\t\"id\": " + Long.toString(newUser.getID()) + "\n}");
     }
 
-    @RequestMapping(path = "/api/session", method = RequestMethod.POST)
-    public ResponseEntity auth(@RequestBody AuthorizationRequest body,
-                               HttpSession httpSession) {
-        if (StringUtils.isEmpty(body.getLogin())
-                || StringUtils.isEmpty(body.getPassword())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
-        }
-        final UserProfile user = accountService.getUser(body.getLogin());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
-        }
-        if (user.getPassword().equals(body.getPassword())) {
-            return ResponseEntity.ok("{\n\t\"id\": " + Long.toString(user.getID()) + "\n}");
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
-    }
-
     private static class RegistrationRequest {
         private String login;
         private String password;
         private String email;
-        
+
         private RegistrationRequest() {}
 
         private RegistrationRequest(String login, String password, String email) {
@@ -86,26 +69,6 @@ public class RegistrationController {
 
         public String getEmail() {
             return email;
-        }
-    }
-
-    private static class AuthorizationRequest {
-        private String login;
-        private String password;
-
-        private AuthorizationRequest() {}
-
-        private AuthorizationRequest(String login, String password) {
-            this.login = login;
-            this.password = password;
-        }
-
-        public String getLogin() {
-            return login;
-        }
-
-        public String getPassword() {
-            return password;
         }
     }
 
