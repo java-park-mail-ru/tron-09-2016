@@ -11,7 +11,7 @@ import ru.mail.park.services.AccountService;
 import javax.servlet.http.HttpSession;
 
 /**
- * Created by Solovyev on 06/09/16.
+ * Created by Zac on 01/10/16.
  */
 
 @RestController
@@ -43,7 +43,7 @@ public class RegistrationController {
 
         final UserProfile newUser = new UserProfile(login, password, email);
         accountService.addUser(newUser);
-        return ResponseEntity.ok(new SuccessResponse(Long.toString(newUser.getID())));
+        return ResponseEntity.ok("{\n\t\"id\": " + Long.toString(newUser.getID()) + "\n}");
     }
 
     @RequestMapping(path = "/api/session", method = RequestMethod.POST)
@@ -58,7 +58,7 @@ public class RegistrationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
         if (user.getPassword().equals(body.getPassword())) {
-            return ResponseEntity.ok(new SuccessResponse(Long.toString(user.getID())));
+            return ResponseEntity.ok("{\n\t\"id\": " + Long.toString(user.getID()) + "\n}");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
     }
@@ -67,7 +67,7 @@ public class RegistrationController {
         private String login;
         private String password;
         private String email;
-
+        
         private RegistrationRequest() {}
 
         private RegistrationRequest(String login, String password, String email) {
@@ -106,19 +106,6 @@ public class RegistrationController {
 
         public String getPassword() {
             return password;
-        }
-    }
-
-    private static final class SuccessResponse {
-        private String ID;
-
-        private SuccessResponse(String ID) {
-            this.ID = ID;
-        }
-
-        @SuppressWarnings("unused")
-        public String getLogin() {
-            return ID;
         }
     }
 
