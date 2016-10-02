@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.model.UserProfile;
 import ru.mail.park.services.AccountService;
+import ru.mail.park.services.SessionService;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,10 +18,12 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class AuthorizationController {
     private final AccountService accountService;
+    private final SessionService sessionService;
 
     @Autowired
-    public AuthorizationController(AccountService accountService) {
+    public AuthorizationController(AccountService accountService, SessionService sessionService) {
         this.accountService = accountService;
+        this.sessionService = sessionService;
     }
 
     @RequestMapping(path = "/api/session", method = RequestMethod.POST)
@@ -35,6 +38,8 @@ public class AuthorizationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
         if (user.getPassword().equals(body.getPassword())) {
+            final String sessionId = httpSession.getId();
+            sessionService.addSession(sessionId, user);
             return ResponseEntity.ok("{\n\t\"id\": " + Long.toString(user.getID()) + "\n}");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
