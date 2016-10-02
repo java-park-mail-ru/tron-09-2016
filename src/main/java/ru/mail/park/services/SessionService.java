@@ -18,12 +18,11 @@ public class SessionService {
         sessionIdToUser.put(sessionId, user);
     }
 
-//    public String getUserLoginBySession(String sessionId) {
-//        return sessionIdToUser.get(sessionId);
-//    }
-//
-//    public String removeSession(String sessionId) {
-//        return sessionIdToUser.remove(sessionId);
-//    }
+    public UserProfile getUser(String sessionId) {
+        if (sessionIdToUser.containsKey(sessionId))
+            return sessionIdToUser.get(sessionId);
+
+        return null;
+    }
 
 }
