@@ -45,17 +45,6 @@ public class AuthorizationController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
     }
 
-    @RequestMapping(path = "/api/session", method = RequestMethod.GET)
-    public ResponseEntity authorizationCheck(HttpSession httpSession) {
-        final String sessionId = httpSession.getId();
-        final UserProfile user = sessionService.getUser(sessionId);
-        if (user != null){
-            return ResponseEntity.ok("{\n\t\"id\": " + Long.toString(user.getID()) + "\n}");
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
-    }
-
-
     private static class LoginRequest {
         private String login;
         private String password;
@@ -75,4 +64,22 @@ public class AuthorizationController {
             return password;
         }
     }
+
+    @RequestMapping(path = "/api/session", method = RequestMethod.GET)
+    public ResponseEntity authorizationCheck(HttpSession httpSession) {
+        final String sessionId = httpSession.getId();
+        final UserProfile user = sessionService.getUser(sessionId);
+        if (user != null){
+            return ResponseEntity.ok("{\n\t\"id\": " + Long.toString(user.getID()) + "\n}");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+    }
+
+    @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
+    public ResponseEntity logout(HttpSession httpSession) {
+        final String sessionId = httpSession.getId();
+        sessionService.deleteSession(sessionId);
+        return ResponseEntity.ok("{}");
+    }
+
 }

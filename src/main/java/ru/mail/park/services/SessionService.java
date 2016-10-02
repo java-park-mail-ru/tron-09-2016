@@ -25,4 +25,8 @@ public class SessionService {
         return null;
     }
 
+    public void deleteSession(String sessionId) {
+        if (sessionIdToUser.containsKey(sessionId))
+            sessionIdToUser.remove(sessionId);
+    }
 }
