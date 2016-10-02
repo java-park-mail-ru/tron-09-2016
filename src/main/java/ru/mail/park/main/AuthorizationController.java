@@ -45,9 +45,8 @@ public class AuthorizationController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
     }
 
-    @RequestMapping(path = "/api/session", method = RequestMethod.POST)
-    public ResponseEntity authorizationCheck(@RequestBody LoginRequest body,
-                                HttpSession httpSession) {
+    @RequestMapping(path = "/api/session", method = RequestMethod.GET)
+    public ResponseEntity authorizationCheck(HttpSession httpSession) {
         final String sessionId = httpSession.getId();
         final UserProfile user = sessionService.getUser(sessionId);
         if (user != null){
