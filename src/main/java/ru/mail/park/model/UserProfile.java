@@ -28,7 +28,23 @@ public class UserProfile {
         return password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public long getID() {
         return id;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -20,4 +20,33 @@ public class AccountService {
 
         return null;
     }
+
+    public boolean isEmailFree(String email) {
+        for(Map.Entry<String, UserProfile> entry : userNameToUser.entrySet()) {
+            final UserProfile user = entry.getValue();
+
+            if (user.getEmail().equals(email)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean isLoginFree(String login) {
+        for(Map.Entry<String, UserProfile> entry : userNameToUser.entrySet()) {
+            final UserProfile user = entry.getValue();
+
+            if (user.getLogin().equals(login)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void deletePairByKey(String login) {
+        userNameToUser.remove(login);
+    }
+
 }
