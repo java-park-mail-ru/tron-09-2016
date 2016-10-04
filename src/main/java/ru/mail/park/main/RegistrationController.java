@@ -31,6 +31,9 @@ public class RegistrationController {
                 || StringUtils.isEmpty(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
+        if (!accountService.isEmailFree(email)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+        }
         final UserProfile existingUser = accountService.getUser(login);
         if (existingUser != null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
