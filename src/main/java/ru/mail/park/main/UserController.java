@@ -138,4 +138,21 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteUser(@PathVariable long userId,
+                                      HttpSession httpSession) {
+        final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
+        if (sessionUser == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
+        }
+        if (sessionUser.getID() != userId){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
+        }
+
+        accountService.deletePairByKey(sessionUser.getLogin());
+        sessionService.deleteSession(httpSession.getId());
+
+        return ResponseEntity.ok("{}");
+    }
+
 }

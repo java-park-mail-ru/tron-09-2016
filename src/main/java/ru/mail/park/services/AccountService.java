@@ -46,7 +46,8 @@ public class AccountService {
     }
 
     public void deletePairByKey(String login) {
-        userNameToUser.remove(login);
+        if (userNameToUser.containsKey(login))
+            userNameToUser.remove(login);
     }
 
 }
