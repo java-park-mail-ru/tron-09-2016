@@ -31,6 +31,25 @@ public class UserController {
         this.sessionService = sessionService;
     }
 
+    @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.GET)
+    public ResponseEntity getUserInfo(@PathVariable long userId,
+                                      HttpSession httpSession) {
+        final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
+        if (sessionUser == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+        }
+        if (sessionUser.getID() != userId){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+        }
+
+        return ResponseEntity.ok(
+                "{\n" +
+                "  \"id\": " + Long.toString(userId) + ",\n" +
+                "  \"login\": \"" + sessionUser.getLogin() + "\",\n" +
+                "  \"email\": \"" + sessionUser.getEmail() + "\"\n" +
+                "}");
+    }
+
     @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.PUT)
     public ResponseEntity getUserInfo(@PathVariable long userId,
                                       @RequestBody UserRequest body,
