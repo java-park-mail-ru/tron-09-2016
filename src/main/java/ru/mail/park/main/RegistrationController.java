@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.mail.park.model.UserProfile;
 import ru.mail.park.services.AccountService;
 
-import javax.servlet.http.HttpSession;
-
 /**
  * Created by Zac on 01/10/16.
  */
@@ -24,10 +22,7 @@ public class RegistrationController {
     }
 
     @RequestMapping(path = "/api/user", method = RequestMethod.POST)
-    public ResponseEntity registration(@RequestBody RegistrationRequest body,
-                                HttpSession httpSession) {
-        final String sessionId = httpSession.getId();
-
+    public ResponseEntity registration(@RequestBody RegistrationRequest body) {
         final String login = body.getLogin();
         final String password = body.getPassword();
         final String email = body.getEmail();
@@ -46,13 +41,15 @@ public class RegistrationController {
         return ResponseEntity.ok("{\n\t\"id\": " + Long.toString(newUser.getID()) + "\n}");
     }
 
-    private static class RegistrationRequest {
+    private static final class RegistrationRequest {
         private String login;
         private String password;
         private String email;
 
+        @SuppressWarnings("unused")
         private RegistrationRequest() {}
 
+        @SuppressWarnings("unused")
         private RegistrationRequest(String login, String password, String email) {
             this.login = login;
             this.password = password;

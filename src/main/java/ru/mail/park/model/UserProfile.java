@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Created by Zac on 01/10/16.
  */
+
 public class UserProfile {
     private static final AtomicLong ID_GENETATOR = new AtomicLong(0);
 

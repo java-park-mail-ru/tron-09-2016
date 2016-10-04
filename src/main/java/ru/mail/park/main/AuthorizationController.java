@@ -45,12 +45,14 @@ public class AuthorizationController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
     }
 
-    private static class LoginRequest {
+    private static final class LoginRequest {
         private String login;
         private String password;
 
+        @SuppressWarnings("unused")
         private LoginRequest() {}
 
+        @SuppressWarnings("unused")
         private LoginRequest(String login, String password) {
             this.login = login;
             this.password = password;

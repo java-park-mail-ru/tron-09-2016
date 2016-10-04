@@ -1,5 +1,6 @@
 package ru.mail.park.services;
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import ru.mail.park.model.UserProfile;
 
@@ -14,6 +15,7 @@ public class AccountService {
         userNameToUser.put(userProfile.getLogin(), userProfile);
     }
 
+    @Nullable
     public UserProfile getUser(String login) {
         if (userNameToUser.containsKey(login))
             return userNameToUser.get(login);

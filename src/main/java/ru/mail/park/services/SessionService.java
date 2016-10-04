@@ -1,5 +1,6 @@
 package ru.mail.park.services;
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import ru.mail.park.model.UserProfile;
 
@@ -18,6 +19,7 @@ public class SessionService {
         sessionIdToUser.put(sessionId, user);
     }
 
+    @Nullable
     public UserProfile getUser(String sessionId) {
         if (sessionIdToUser.containsKey(sessionId))
             return sessionIdToUser.get(sessionId);
