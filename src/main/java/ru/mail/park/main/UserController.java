@@ -88,7 +88,7 @@ public class UserController {
 
         final boolean isLoginNotSameAndFree = !isLoginSame && accountService.isLoginFree(login);
         if (isEmailSame && isLoginNotSameAndFree) {
-            accountService.deletePairByKey(login);
+            accountService.deleteUser(login);
             sessionUser.setLogin(login);
             sessionUser.setPassword(password);
             accountService.addUser(sessionUser);
@@ -98,7 +98,7 @@ public class UserController {
                     "}");
         }
         if (isLoginNotSameAndFree && isEmailNotSameAndFree) {
-            accountService.deletePairByKey(login);
+            accountService.deleteUser(login);
             sessionUser.setLogin(login);
             sessionUser.setPassword(password);
             sessionUser.setEmail(email);
@@ -149,7 +149,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
         }
 
-        accountService.deletePairByKey(sessionUser.getLogin());
+        accountService.deleteUser(sessionUser.getLogin());
         sessionService.deleteSession(httpSession.getId());
 
         return ResponseEntity.ok("{}");
