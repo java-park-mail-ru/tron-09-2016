@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.PUT)
-    public ResponseEntity getUserInfo(@PathVariable long userId,
+    public ResponseEntity putUserInfo(@PathVariable long userId,
                                       @RequestBody UserRequest body,
                                       HttpSession httpSession) {
         final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
@@ -76,8 +76,8 @@ public class UserController {
                     "}");
         }
 
-        final boolean isEmailFree= accountService.isEmailFree(email);
-        if (isLoginSame && !isEmailSame && isEmailFree) {
+        final boolean isEmailNotSameAndFree = !isEmailSame && accountService.isEmailFree(email);
+        if (isLoginSame && isEmailNotSameAndFree) {
             sessionUser.setPassword(password);
             sessionUser.setEmail(email);
             return ResponseEntity.ok(
@@ -86,8 +86,8 @@ public class UserController {
                     "}");
         }
 
-        final boolean isLoginFree = accountService.isLoginFree(login);
-        if (isEmailSame && !isLoginSame && isLoginFree) {
+        final boolean isLoginNotSameAndFree = !isLoginSame && accountService.isLoginFree(login);
+        if (isEmailSame && isLoginNotSameAndFree) {
             accountService.deletePairByKey(login);
             sessionUser.setLogin(login);
             sessionUser.setPassword(password);
@@ -97,7 +97,7 @@ public class UserController {
                     "  \"id\": \"" + Long.toString(userId) + "\"\n" +
                     "}");
         }
-        if (!isLoginSame && isLoginFree && !isEmailSame && isEmailFree) {
+        if (isLoginNotSameAndFree && isEmailNotSameAndFree) {
             accountService.deletePairByKey(login);
             sessionUser.setLogin(login);
             sessionUser.setPassword(password);
