@@ -59,13 +59,13 @@ public class UserController {
         if (sessionUser.getID() != userId){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
         }
-
         final String login = body.getLogin();
         final String password = body.getPassword();
         final String email = body.getEmail();
 
         final boolean isLoginSame = login.equals(sessionUser.getLogin());
         final boolean isEmailSame = email.equals(sessionUser.getEmail());
+
         if (isLoginSame && isEmailSame) {
             sessionUser.setPassword(password);
             return ResponseEntity.ok(
@@ -85,17 +85,7 @@ public class UserController {
         }
 
         final boolean isLoginNotSameAndFree = !isLoginSame && accountService.isLoginFree(login);
-        if (isEmailSame && isLoginNotSameAndFree) {
-            accountService.deleteUser(login);
-            sessionUser.setLogin(login);
-            sessionUser.setPassword(password);
-            accountService.addUser(sessionUser);
-            return ResponseEntity.ok(
-                    "{\n" +
-                    "  \"id\": \"" + Long.toString(userId) + "\"\n" +
-                    '}');
-        }
-        if (isLoginNotSameAndFree && isEmailNotSameAndFree) {
+        if (isLoginNotSameAndFree && (isEmailSame || isEmailNotSameAndFree)) {
             accountService.deleteUser(login);
             sessionUser.setLogin(login);
             sessionUser.setPassword(password);
