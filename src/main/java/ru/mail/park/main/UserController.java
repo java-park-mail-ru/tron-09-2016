@@ -31,21 +31,18 @@ public class UserController {
     }
 
     @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.GET)
-    public ResponseEntity getUserInfo(@PathVariable long userId, HttpSession httpSession) {
-        final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
-        if (sessionUser == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
-        }
-        if (sessionUser.getID() != userId){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+    public ResponseEntity getUserInfo(@PathVariable long userId) {
+        final UserProfile user = accountService.getUserBYId(userId);
+        if (user != null){
+            return ResponseEntity.ok(
+                    "{\n" +
+                    "  \"id\": " + Long.toString(userId) + ",\n" +
+                    "  \"login\": \"" + user.getLogin() + "\",\n" +
+                    "  \"email\": \"" + user.getEmail() + "\"\n" +
+                    '}');
         }
 
-        return ResponseEntity.ok(
-                "{\n" +
-                "  \"id\": " + Long.toString(userId) + ",\n" +
-                "  \"login\": \"" + sessionUser.getLogin() + "\",\n" +
-                "  \"email\": \"" + sessionUser.getEmail() + "\"\n" +
-                '}');
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
     }
 
     @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.PUT)

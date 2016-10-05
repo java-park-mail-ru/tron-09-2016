@@ -23,6 +23,18 @@ public class AccountService {
         return null;
     }
 
+    public UserProfile getUserBYId(long id) {
+        for(Map.Entry<String, UserProfile> entry : userNameToUser.entrySet()) {
+            final UserProfile user = entry.getValue();
+
+            if (user.getID() == id){
+                return user;
+            }
+        }
+
+        return null;
+    }
+
     public boolean isEmailFree(String email) {
         for(Map.Entry<String, UserProfile> entry : userNameToUser.entrySet()) {
             final UserProfile user = entry.getValue();
