@@ -20,6 +20,9 @@
 .idea/dynamic.xml
 .idea/uiDesigner.xml
 
+#
+.tp_java_new.xml
+
 # Mongo Explorer plugin:
 .idea/mongoSettings.xml
 
