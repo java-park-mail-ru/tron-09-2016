@@ -18,11 +18,7 @@ import javax.servlet.http.HttpSession;
 public class UserController {
     private final AccountService accountService;
     private final SessionService sessionService;
-    private final String badResponse =
-            "{\n" +
-            "  \"status\": 403,\n" +
-            "  \"message\": \"Чужой юзер\"\n" +
-            '}';
+    private static final BadResponse BAD_RESPONSE = new BadResponse(403, "Another user");
 
     @Autowired
     public UserController(AccountService accountService, SessionService sessionService) {
@@ -30,19 +26,70 @@ public class UserController {
         this.sessionService = sessionService;
     }
 
+    private static final class BadResponse {
+        private int status;
+        private String message;
+
+        @SuppressWarnings("unused")
+        private BadResponse() {
+        }
+
+        private BadResponse(int status, String message) {
+            this.status = status;
+            this.message = message;
+        }
+
+        @SuppressWarnings("unused")
+        public int getStatus() {
+            return status;
+        }
+
+        @SuppressWarnings("unused")
+        public String getMessage() {
+            return message;
+        }
+    }
+
     @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.GET)
     public ResponseEntity getUserInfo(@PathVariable long userId) {
         final UserProfile user = accountService.getUserBYId(userId);
-        if (user != null){
+        if (user != null) {
             return ResponseEntity.ok(
-                    "{\n" +
-                    "  \"id\": " + Long.toString(userId) + ",\n" +
-                    "  \"login\": \"" + user.getLogin() + "\",\n" +
-                    "  \"email\": \"" + user.getEmail() + "\"\n" +
-                    '}');
+                    new SuccessResponse(Long.toString(userId), user.getLogin(), user.getEmail()));
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+    }
+
+    private static final class SuccessResponse {
+        private String id;
+        private String login;
+        private String email;
+
+        @SuppressWarnings("unused")
+        private SuccessResponse() {
+        }
+
+        private SuccessResponse(String id, String login, String email) {
+            this.id = id;
+            this.login = login;
+            this.email = email;
+        }
+
+        @SuppressWarnings("unused")
+        public String getId() {
+            return id;
+        }
+
+        @SuppressWarnings("unused")
+        public String getLogin() {
+            return login;
+        }
+
+        @SuppressWarnings("unused")
+        public String getEmail() {
+            return email;
+        }
     }
 
     @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.PUT)
@@ -51,10 +98,10 @@ public class UserController {
                                          HttpSession httpSession) {
         final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
         if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
         if (sessionUser.getID() != userId) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
         final String login = body.getLogin();
         final String password = body.getPassword();
@@ -96,7 +143,7 @@ public class UserController {
                             '}');
         }
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
     }
 
     private static final class UserRequest {
@@ -131,10 +178,10 @@ public class UserController {
     public ResponseEntity deleteUser(@PathVariable long userId, HttpSession httpSession) {
         final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
         if (sessionUser == null){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
         if (sessionUser.getID() != userId){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
 
         accountService.deleteUser(sessionUser.getLogin());
