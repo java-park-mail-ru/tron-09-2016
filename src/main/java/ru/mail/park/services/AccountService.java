@@ -35,18 +35,6 @@ public class AccountService {
         return true;
     }
 
-    public boolean isLoginFree(String login) {
-        for(Map.Entry<String, UserProfile> entry : userNameToUser.entrySet()) {
-            final UserProfile user = entry.getValue();
-
-            if (user.getLogin().equals(login)){
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public void deleteUser(String login) {
         if (userNameToUser.containsKey(login))
             userNameToUser.remove(login);

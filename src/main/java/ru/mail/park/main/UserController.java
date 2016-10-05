@@ -53,10 +53,10 @@ public class UserController {
                                          @RequestBody UserRequest body,
                                          HttpSession httpSession) {
         final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
-        if (sessionUser == null){
+        if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
         }
-        if (sessionUser.getID() != userId){
+        if (sessionUser.getID() != userId) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
         }
         final String login = body.getLogin();
@@ -80,11 +80,13 @@ public class UserController {
             sessionUser.setEmail(email);
             return ResponseEntity.ok(
                     "{\n" +
-                    "  \"id\": \"" + Long.toString(userId) + "\"\n" +
-                    '}');
+                            "  \"id\": \"" + Long.toString(userId) + "\"\n" +
+                            '}');
         }
 
-        final boolean isLoginNotSameAndFree = !isLoginSame && accountService.isLoginFree(login);
+        final UserProfile existingUser = accountService.getUser(login);
+        final boolean isLoginNotSameAndFree = (existingUser == null && !isLoginSame);
+
         if (isLoginNotSameAndFree && (isEmailSame || isEmailNotSameAndFree)) {
             accountService.deleteUser(login);
             sessionUser.setLogin(login);
@@ -93,8 +95,8 @@ public class UserController {
             accountService.addUser(sessionUser);
             return ResponseEntity.ok(
                     "{\n" +
-                    "  \"id\": \"" + Long.toString(userId) + "\"\n" +
-                    '}');
+                            "  \"id\": \"" + Long.toString(userId) + "\"\n" +
+                            '}');
         }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(badResponse);
