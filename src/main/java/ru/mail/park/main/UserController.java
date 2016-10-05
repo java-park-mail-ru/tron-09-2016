@@ -138,7 +138,7 @@ public class UserController {
         }
 
         accountService.deleteUser(sessionUser.getLogin());
-        sessionService.deleteSession(httpSession.getId());
+        sessionService.deleteAllSessions(sessionUser.getLogin());
 
         return ResponseEntity.ok("{}");
     }

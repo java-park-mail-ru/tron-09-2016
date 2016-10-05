@@ -27,7 +27,7 @@ public class AccountService {
         for(Map.Entry<String, UserProfile> entry : userNameToUser.entrySet()) {
             final UserProfile user = entry.getValue();
 
-            if (user.getID() == id){
+            if (user.getID() == id) {
                 return user;
             }
         }
@@ -39,7 +39,7 @@ public class AccountService {
         for(Map.Entry<String, UserProfile> entry : userNameToUser.entrySet()) {
             final UserProfile user = entry.getValue();
 
-            if (user.getEmail().equals(email)){
+            if (user.getEmail().equals(email)) {
                 return false;
             }
         }
