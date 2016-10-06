@@ -112,20 +112,14 @@ public class UserController {
 
         if (isLoginSame && isEmailSame) {
             sessionUser.setPassword(password);
-            return ResponseEntity.ok(
-                    "{\n" +
-                    "  \"id\": \"" + Long.toString(userId) + "\"\n" +
-                    '}');
+            return ResponseEntity.ok(Helper.getIdResponse(userId));
         }
 
         final boolean isEmailNotSameAndFree = !isEmailSame && accountService.isEmailFree(email);
         if (isLoginSame && isEmailNotSameAndFree) {
             sessionUser.setPassword(password);
             sessionUser.setEmail(email);
-            return ResponseEntity.ok(
-                    "{\n" +
-                            "  \"id\": \"" + Long.toString(userId) + "\"\n" +
-                            '}');
+            return ResponseEntity.ok(Helper.getIdResponse(userId));
         }
 
         final UserProfile existingUser = accountService.getUser(login);
@@ -137,10 +131,7 @@ public class UserController {
             sessionUser.setPassword(password);
             sessionUser.setEmail(email);
             accountService.addUser(sessionUser);
-            return ResponseEntity.ok(
-                    "{\n" +
-                            "  \"id\": \"" + Long.toString(userId) + "\"\n" +
-                            '}');
+            return ResponseEntity.ok(Helper.getIdResponse(userId));
         }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);

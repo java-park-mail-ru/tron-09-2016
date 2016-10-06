@@ -40,7 +40,7 @@ public class AuthorizationController {
         if (user.getPassword().equals(body.getPassword())) {
             final String sessionId = httpSession.getId();
             sessionService.addSession(sessionId, user);
-            return ResponseEntity.ok("{\"id\": " + user.getID() + '}');
+            return ResponseEntity.ok(Helper.getIdResponse(user.getID()));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
     }
@@ -72,7 +72,7 @@ public class AuthorizationController {
         final String sessionId = httpSession.getId();
         final UserProfile user = sessionService.getUser(sessionId);
         if (user != null){
-            return ResponseEntity.ok("{\"id\": " + user.getID() + '}');
+            return ResponseEntity.ok(Helper.getIdResponse(user.getID()));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
     }

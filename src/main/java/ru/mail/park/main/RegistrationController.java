@@ -41,7 +41,7 @@ public class RegistrationController {
 
         final UserProfile newUser = new UserProfile(login, password, email);
         accountService.addUser(newUser);
-        return ResponseEntity.ok("{\"id\": " + newUser.getID() + '}');
+        return ResponseEntity.ok(Helper.getIdResponse(newUser.getID()));
     }
 
     private static final class RegistrationRequest {
