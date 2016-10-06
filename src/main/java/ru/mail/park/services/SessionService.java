@@ -4,14 +4,10 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import ru.mail.park.model.UserProfile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
-/**
- * ДЗ: реализовать класс, который по соответствующему id сессии будет отдавать пользователей(т.е. реализовать авторизацию по сессии)
- *
- */
 @Service
 public class SessionService {
     private Map<String, UserProfile> sessionIdToUser = new HashMap<>();
@@ -29,12 +25,11 @@ public class SessionService {
     }
 
     public void deleteSession(String sessionId) {
-        if (sessionIdToUser.containsKey(sessionId))
-            sessionIdToUser.remove(sessionId);
+        sessionIdToUser.remove(sessionId);
     }
 
     public void deleteAllSessions(String login){
-        Vector<String> userSessions = new Vector<>();
+        ArrayList<String> userSessions = new ArrayList<>();
 
         for(Map.Entry<String, UserProfile> entry : sessionIdToUser.entrySet()) {
             final UserProfile user = entry.getValue();
@@ -48,4 +43,5 @@ public class SessionService {
             sessionIdToUser.remove(sessionId);
         }
     }
+
 }

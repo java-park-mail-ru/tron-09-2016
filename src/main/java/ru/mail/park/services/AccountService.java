@@ -17,10 +17,7 @@ public class AccountService {
 
     @Nullable
     public UserProfile getUser(String login) {
-        if (userNameToUser.containsKey(login))
-            return userNameToUser.get(login);
-
-        return null;
+        return userNameToUser.get(login);
     }
 
     public UserProfile getUserBYId(long id) {
@@ -48,8 +45,7 @@ public class AccountService {
     }
 
     public void deleteUser(String login) {
-        if (userNameToUser.containsKey(login))
-            userNameToUser.remove(login);
+        userNameToUser.remove(login);
     }
 
 }
