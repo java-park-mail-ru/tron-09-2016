@@ -51,7 +51,11 @@ public class UserController {
     }
 
     @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.GET)
-    public ResponseEntity getUserInfo(@PathVariable long userId) {
+    public ResponseEntity getUserInfo(@PathVariable long userId, HttpSession httpSession) {
+        final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
+        if (sessionUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+        }
         final UserProfile user = accountService.getUserBYId(userId);
         if (user != null) {
             return ResponseEntity.ok(

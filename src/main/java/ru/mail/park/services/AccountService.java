@@ -15,11 +15,11 @@ public class AccountService {
         userNameToUser.put(userProfile.getLogin(), userProfile);
     }
 
-    @Nullable
     public UserProfile getUser(String login) {
         return userNameToUser.get(login);
     }
 
+    @Nullable
     public UserProfile getUserBYId(long id) {
         for(Map.Entry<String, UserProfile> entry : userNameToUser.entrySet()) {
             final UserProfile user = entry.getValue();
