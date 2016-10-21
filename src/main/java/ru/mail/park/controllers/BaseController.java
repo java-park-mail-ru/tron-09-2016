@@ -1,6 +1,7 @@
 package ru.mail.park.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -9,7 +10,9 @@ import javax.sql.DataSource;
  * Created by zac on 21.10.16.
  */
 
-public class BaseController {
+
+@RestController
+public abstract class BaseController {
     protected final DataSource dataSource;
 
     @Autowired
