@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by Zac on 01/10/16.
  */
 
-public class UserProfile {
+public class UserDataSet {
     private static final AtomicLong ID_GENETATOR = new AtomicLong(0);
 
     private String login;
@@ -14,7 +14,7 @@ public class UserProfile {
     private String email;
     private long id;
 
-    public UserProfile(String login, String password, String email) {
+    public UserDataSet(String login, String password, String email) {
         this.login = login;
         this.password = password;
         this.email = email;

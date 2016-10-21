@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import ru.mail.park.model.UserProfile;
+import ru.mail.park.model.UserDataSet;
 import ru.mail.park.services.AccountService;
 
 /**
@@ -34,12 +34,12 @@ public class RegistrationController {
         if (!accountService.isEmailFree(email)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
-        final UserProfile existingUser = accountService.getUser(login);
+        final UserDataSet existingUser = accountService.getUser(login);
         if (existingUser != null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
 
-        final UserProfile newUser = new UserProfile(login, password, email);
+        final UserDataSet newUser = new UserDataSet(login, password, email);
         accountService.addUser(newUser);
         return ResponseEntity.ok(Helper.getIdResponse(newUser.getID()));
     }

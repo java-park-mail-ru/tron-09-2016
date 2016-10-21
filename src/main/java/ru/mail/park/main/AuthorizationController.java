@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import ru.mail.park.model.UserProfile;
+import ru.mail.park.model.UserDataSet;
 import ru.mail.park.services.AccountService;
 import ru.mail.park.services.SessionService;
 
@@ -33,7 +33,7 @@ public class AuthorizationController {
                 || StringUtils.isEmpty(body.getPassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
-        final UserProfile user = accountService.getUser(body.getLogin());
+        final UserDataSet user = accountService.getUser(body.getLogin());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
@@ -70,7 +70,7 @@ public class AuthorizationController {
     @RequestMapping(path = "/api/session", method = RequestMethod.GET)
     public ResponseEntity authorizationCheck(HttpSession httpSession) {
         final String sessionId = httpSession.getId();
-        final UserProfile user = sessionService.getUser(sessionId);
+        final UserDataSet user = sessionService.getUser(sessionId);
         if (user != null){
             return ResponseEntity.ok(Helper.getIdResponse(user.getID()));
         }

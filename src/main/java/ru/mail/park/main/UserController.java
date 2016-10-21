@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.mail.park.model.UserProfile;
+import ru.mail.park.model.UserDataSet;
 import ru.mail.park.services.AccountService;
 import ru.mail.park.services.SessionService;
 
@@ -52,11 +52,11 @@ public class UserController {
 
     @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.GET)
     public ResponseEntity getUserInfo(@PathVariable long userId, HttpSession httpSession) {
-        final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
+        final UserDataSet sessionUser = sessionService.getUser(httpSession.getId());
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
         }
-        final UserProfile user = accountService.getUserBYId(userId);
+        final UserDataSet user = accountService.getUserBYId(userId);
         if (user != null) {
             return ResponseEntity.ok(
                     new SuccessResponse(Long.toString(userId), user.getLogin(), user.getEmail()));
@@ -100,7 +100,7 @@ public class UserController {
     public ResponseEntity changeUserInfo(@PathVariable long userId,
                                          @RequestBody UserRequest body,
                                          HttpSession httpSession) {
-        final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
+        final UserDataSet sessionUser = sessionService.getUser(httpSession.getId());
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
@@ -126,7 +126,7 @@ public class UserController {
             return ResponseEntity.ok(Helper.getIdResponse(userId));
         }
 
-        final UserProfile existingUser = accountService.getUser(login);
+        final UserDataSet existingUser = accountService.getUser(login);
         final boolean isLoginNotSameAndFree = (existingUser == null && !isLoginSame);
 
         if (isLoginNotSameAndFree && (isEmailSame || isEmailNotSameAndFree)) {
@@ -171,7 +171,7 @@ public class UserController {
 
     @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.DELETE)
     public ResponseEntity deleteUser(@PathVariable long userId, HttpSession httpSession) {
-        final UserProfile sessionUser = sessionService.getUser(httpSession.getId());
+        final UserDataSet sessionUser = sessionService.getUser(httpSession.getId());
         if (sessionUser == null){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }

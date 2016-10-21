@@ -2,27 +2,27 @@ package ru.mail.park.services;
 
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
-import ru.mail.park.model.UserProfile;
+import ru.mail.park.model.UserDataSet;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class AccountService {
-    private Map<String, UserProfile> userNameToUser = new HashMap<>();
+    private Map<String, UserDataSet> userNameToUser = new HashMap<>();
 
-    public void addUser(UserProfile userProfile) {
-        userNameToUser.put(userProfile.getLogin(), userProfile);
+    public void addUser(UserDataSet userDataSet) {
+        userNameToUser.put(userDataSet.getLogin(), userDataSet);
     }
 
-    public UserProfile getUser(String login) {
+    public UserDataSet getUser(String login) {
         return userNameToUser.get(login);
     }
 
     @Nullable
-    public UserProfile getUserBYId(long id) {
-        for(Map.Entry<String, UserProfile> entry : userNameToUser.entrySet()) {
-            final UserProfile user = entry.getValue();
+    public UserDataSet getUserBYId(long id) {
+        for(Map.Entry<String, UserDataSet> entry : userNameToUser.entrySet()) {
+            final UserDataSet user = entry.getValue();
 
             if (user.getID() == id) {
                 return user;
@@ -33,8 +33,8 @@ public class AccountService {
     }
 
     public boolean isEmailFree(String email) {
-        for(Map.Entry<String, UserProfile> entry : userNameToUser.entrySet()) {
-            final UserProfile user = entry.getValue();
+        for(Map.Entry<String, UserDataSet> entry : userNameToUser.entrySet()) {
+            final UserDataSet user = entry.getValue();
 
             if (user.getEmail().equals(email)) {
                 return false;
