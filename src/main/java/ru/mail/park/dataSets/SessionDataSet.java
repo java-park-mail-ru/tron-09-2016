@@ -1,4 +1,4 @@
-package ru.mail.park.model;
+package ru.mail.park.dataSets;
 
 /**
  * Created by zac on 21.10.16.

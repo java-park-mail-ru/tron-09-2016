@@ -1,4 +1,4 @@
-package ru.mail.park;
+package ru.mail.park.services;
 
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;

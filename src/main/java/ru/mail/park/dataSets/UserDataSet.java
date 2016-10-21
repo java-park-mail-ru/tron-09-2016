@@ -1,4 +1,4 @@
-package ru.mail.park.model;
+package ru.mail.park.dataSets;
 
 import java.util.concurrent.atomic.AtomicLong;
 

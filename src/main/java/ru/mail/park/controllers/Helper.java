@@ -1,4 +1,4 @@
-package ru.mail.park.main;
+package ru.mail.park.controllers;
 
 /**
  * Created by zac on 06.10.16.
