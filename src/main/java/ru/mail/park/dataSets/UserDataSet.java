@@ -2,6 +2,9 @@ package ru.mail.park.dataSets;
 
 import com.google.gson.JsonObject;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  * Created by Zac on 01/10/16.
  */
@@ -17,6 +20,13 @@ public class UserDataSet {
         login = object.get("login").getAsString();
         password = object.get("password").getAsString();
         email = object.get("email").getAsString();
+    }
+
+    public UserDataSet(ResultSet resultSet) throws SQLException {
+        id = resultSet.getLong("id");
+        login = resultSet.getString("login");
+        password = resultSet.getString("password");
+        email = resultSet.getString("email");
     }
 
     public long getId() {

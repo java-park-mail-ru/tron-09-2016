@@ -4,28 +4,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.mail.park.dao.UserDAO;
+import ru.mail.park.dao.impl.UserDAOImpl;
 import ru.mail.park.dataSets.UserDataSet;
 import ru.mail.park.services.AccountService;
 import ru.mail.park.services.SessionService;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 /**
  * Created by zac on 02.10.16.
  */
 
 @RestController
-public class UserController {
-//    private final AccountService accountService;
-//    private final SessionService sessionService;
-//    private static final BadResponse BAD_RESPONSE = new BadResponse(403, "Another user");
-//
-//    @Autowired
-//    public UserController(AccountService accountService, SessionService sessionService) {
-//        this.accountService = accountService;
-//        this.sessionService = sessionService;
-//    }
-//
+@RequestMapping(value = "/api/user")
+public class UserController extends BaseController {
+    private UserDAO userDAO;
+
+    public UserController(DataSource dataSource) {
+        super(dataSource);
+    }
+
+    @Override
+    void init() {
+        super.init();
+        userDAO = new UserDAOImpl(dataSource);
+    }
+
 //    private static final class BadResponse {
 //        private int status;
 //        private String message;
@@ -49,21 +55,12 @@ public class UserController {
 //            return message;
 //        }
 //    }
-//
-//    @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.GET)
-//    public ResponseEntity getUserInfo(@PathVariable long userId, HttpSession httpSession) {
-//        final UserDataSet sessionUser = sessionService.getUser(httpSession.getId());
-//        if (sessionUser == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
-//        }
-//        final UserDataSet user = accountService.getUserBYId(userId);
-//        if (user != null) {
-//            return ResponseEntity.ok(
-//                    new SuccessResponse(Long.toString(userId), user.getLogin(), user.getEmail()));
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
-//    }
+
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    public ResponseEntity getUserInfo(@PathVariable long userId, HttpSession httpSession) {
+        return userDAO.getUserInfo(userId, httpSession);
+    }
+
 //
 //    private static final class SuccessResponse {
 //        private String id;
