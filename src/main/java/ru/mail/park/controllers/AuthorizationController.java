@@ -43,11 +43,9 @@ public class AuthorizationController extends BaseController {
         return authorizationDAO.authorizationCheck(httpSession);
     }
 
-//    @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
-//    public ResponseEntity logout(HttpSession httpSession) {
-//        final String sessionId = httpSession.getId();
-//        sessionService.deleteSession(sessionId);
-//        return ResponseEntity.ok("{}");
-//    }
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity logout(HttpSession httpSession) {
+        return authorizationDAO.logout(httpSession);
+    }
 
 }

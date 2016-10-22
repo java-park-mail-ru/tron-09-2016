@@ -12,4 +12,6 @@ public interface AuthorizationDAO {
     ResponseEntity login(String jsonString, HttpSession httpSession);
 
     ResponseEntity authorizationCheck(HttpSession httpSession);
+
+    ResponseEntity logout(HttpSession httpSession);
 }
