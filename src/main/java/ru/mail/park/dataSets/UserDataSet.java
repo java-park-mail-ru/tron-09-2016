@@ -13,6 +13,13 @@ public class UserDataSet {
     private String password;
     private String email;
 
+    public UserDataSet(long id, String login, String password, String email) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+    }
+
     public UserDataSet(String login, String password, String email) {
         this.id = -1;
         this.login = login;

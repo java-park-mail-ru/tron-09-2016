@@ -27,6 +27,11 @@ public class UserController extends BaseController {
         userDAO = new UserDAOImpl(dataSource);
     }
 
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity registration(@RequestBody String body){
+        return userDAO.registration(body);
+    }
+
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ResponseEntity getUserInfo(@PathVariable long userId, HttpSession httpSession) {
         return userDAO.getUserInfo(userId, httpSession);

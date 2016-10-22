@@ -13,10 +13,7 @@ import ru.mail.park.responses.BadResponse;
 
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Created by zac on 21.10.16.
@@ -27,6 +24,39 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
 
     public UserDAOImpl(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    @Override
+    public ResponseEntity registration(String jsonString) {
+        final JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+        final String login = jsonObject.get("login").getAsString();
+        final String password = jsonObject.get("password").getAsString();
+        final String email = jsonObject.get("email").getAsString();
+        if (StringUtils.isEmpty(login)
+                || StringUtils.isEmpty(password)
+                || StringUtils.isEmpty(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+        }
+
+        final UserDataSet user;
+        try (Connection connection = dataSource.getConnection()) {
+            final String query = "INSERT INTO Users(login, password, email) VALUES (?, ?, ?)";
+            try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, login);
+                ps.setString(2, password);
+                ps.setString(3, email);
+                ps.executeUpdate();
+                user = new UserDataSet(login, password, email);
+                try (ResultSet resultSet = ps.getGeneratedKeys()) {
+                    resultSet.next();
+                    user.setId(resultSet.getLong(1));
+                }
+            }
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+        }
+
+        return ResponseEntity.ok(user);
     }
 
     @Override
