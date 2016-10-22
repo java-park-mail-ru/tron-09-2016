@@ -1,15 +1,9 @@
 package ru.mail.park.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.dao.AuthorizationDAO;
 import ru.mail.park.dao.impl.AuthorizationDAOImpl;
-import ru.mail.park.dataSets.UserDataSet;
-import ru.mail.park.services.AccountService;
-import ru.mail.park.services.SessionService;
 
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
