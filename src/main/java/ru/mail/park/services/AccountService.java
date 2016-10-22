@@ -24,7 +24,7 @@ public class AccountService {
         for(Map.Entry<String, UserDataSet> entry : userNameToUser.entrySet()) {
             final UserDataSet user = entry.getValue();
 
-            if (user.getID() == id) {
+            if (user.getId() == id) {
                 return user;
             }
         }

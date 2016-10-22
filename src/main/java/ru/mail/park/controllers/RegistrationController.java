@@ -1,75 +1,33 @@
 package ru.mail.park.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import ru.mail.park.dataSets.UserDataSet;
-import ru.mail.park.services.AccountService;
+import ru.mail.park.dao.RegistrationDAO;
+import ru.mail.park.dao.impl.RegistrationDAOImpl;
+
+import javax.sql.DataSource;
 
 /**
  * Created by Zac on 01/10/16.
  */
 
 @RestController
-public class RegistrationController {
-    private final AccountService accountService;
+@RequestMapping(value = "/api/user")
+public class RegistrationController extends BaseController {
+    private RegistrationDAO registrationDAO;
 
-    @Autowired
-    public RegistrationController(AccountService accountService) {
-        this.accountService = accountService;
+    public RegistrationController(DataSource dataSource) {
+        super(dataSource);
     }
 
-    @RequestMapping(path = "/api/user", method = RequestMethod.POST)
-    public ResponseEntity registration(@RequestBody RegistrationRequest body) {
-        final String login = body.getLogin();
-        final String password = body.getPassword();
-        final String email = body.getEmail();
-        if (StringUtils.isEmpty(login)
-                || StringUtils.isEmpty(password)
-                || StringUtils.isEmpty(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
-        }
-        if (!accountService.isEmailFree(email)){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
-        }
-        final UserDataSet existingUser = accountService.getUser(login);
-        if (existingUser != null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
-        }
-
-        final UserDataSet newUser = new UserDataSet(login, password, email);
-        accountService.addUser(newUser);
-        return ResponseEntity.ok(Helper.getIdResponse(newUser.getID()));
+    @Override
+    void init() {
+        super.init();
+        registrationDAO = new RegistrationDAOImpl(dataSource);
     }
 
-    private static final class RegistrationRequest {
-        private String login;
-        private String password;
-        private String email;
-
-        @SuppressWarnings("unused")
-        private RegistrationRequest() {}
-
-        @SuppressWarnings("unused")
-        private RegistrationRequest(String login, String password, String email) {
-            this.login = login;
-            this.password = password;
-            this.email = email;
-        }
-
-        public String getLogin() {
-            return login;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public String getEmail() {
-            return email;
-        }
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity registration(@RequestBody String body){
+        return registrationDAO.registration(body);
     }
-
 }
