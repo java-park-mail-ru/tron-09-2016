@@ -34,21 +34,15 @@ public class AuthorizationController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity login(@RequestBody String body,
-                                HttpSession httpSession) {
+    public ResponseEntity login(@RequestBody String body, HttpSession httpSession) {
         return authorizationDAO.login(body, httpSession);
     }
 
-//    @RequestMapping(path = "/api/session", method = RequestMethod.GET)
-//    public ResponseEntity authorizationCheck(HttpSession httpSession) {
-//        final String sessionId = httpSession.getId();
-//        final UserDataSet user = sessionService.getUser(sessionId);
-//        if (user != null){
-//            return ResponseEntity.ok(Helper.getIdResponse(user.getID()));
-//        }
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
-//    }
-//
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity authorizationCheck(HttpSession httpSession) {
+        return authorizationDAO.authorizationCheck(httpSession);
+    }
+
 //    @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
 //    public ResponseEntity logout(HttpSession httpSession) {
 //        final String sessionId = httpSession.getId();

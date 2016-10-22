@@ -10,4 +10,6 @@ import javax.servlet.http.HttpSession;
 
 public interface AuthorizationDAO {
     ResponseEntity login(String jsonString, HttpSession httpSession);
+
+    ResponseEntity authorizationCheck(HttpSession httpSession);
 }

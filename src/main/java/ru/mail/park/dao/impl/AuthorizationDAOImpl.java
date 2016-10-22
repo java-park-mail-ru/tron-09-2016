@@ -58,4 +58,24 @@ public class AuthorizationDAOImpl extends BaseDAOImpl implements AuthorizationDA
 
         return ResponseEntity.ok(session);
     }
+
+    @Override
+    public ResponseEntity authorizationCheck(HttpSession httpSession) {
+        final SessionDataSet session;
+        try (Connection connection = dataSource.getConnection()) {
+            final String sessionId = httpSession.getId();
+            final String query = "SELECT * FROM Sessions WHERE sessionId = ?";
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                ps.setString(1, sessionId);
+                try (ResultSet resultSet = ps.executeQuery()) {
+                    resultSet.next();
+                    session = new SessionDataSet(sessionId, resultSet.getLong("userId"));
+                }
+            }
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+        }
+
+        return ResponseEntity.ok(session);
+    }
 }
