@@ -1,7 +1,5 @@
 package ru.mail.park.dataSets;
 
-import com.google.gson.JsonObject;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -15,18 +13,11 @@ public class UserDataSet {
     private String password;
     private String email;
 
-    public UserDataSet(long id, String login, String password, String email) {
-        this.id = id;
+    public UserDataSet(String login, String password, String email) {
+        this.id = -1;
         this.login = login;
         this.password = password;
         this.email = email;
-    }
-
-    public UserDataSet(JsonObject object) {
-        id = -1;
-        login = object.get("login").getAsString();
-        password = object.get("password").getAsString();
-        email = object.get("email").getAsString();
     }
 
     public UserDataSet(ResultSet resultSet) throws SQLException {

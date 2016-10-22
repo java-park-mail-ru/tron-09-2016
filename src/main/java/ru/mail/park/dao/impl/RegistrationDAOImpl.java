@@ -33,7 +33,7 @@ public class RegistrationDAOImpl extends BaseDAOImpl implements RegistrationDAO{
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
 
-        final UserDataSet user = new UserDataSet(jsonObject);
+        final UserDataSet user;
         try (Connection connection = dataSource.getConnection()) {
             final String query = "INSERT INTO Users(login, password, email) VALUES (?, ?, ?)";
             try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -41,6 +41,7 @@ public class RegistrationDAOImpl extends BaseDAOImpl implements RegistrationDAO{
                 ps.setString(2, password);
                 ps.setString(3, email);
                 ps.executeUpdate();
+                user = new UserDataSet(login, password, email);
                 try (ResultSet resultSet = ps.getGeneratedKeys()) {
                     resultSet.next();
                     user.setId(resultSet.getLong(1));
