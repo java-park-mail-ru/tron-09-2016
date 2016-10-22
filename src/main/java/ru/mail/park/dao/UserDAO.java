@@ -10,4 +10,6 @@ import javax.servlet.http.HttpSession;
 
 public interface UserDAO {
     ResponseEntity getUserInfo(long userId, HttpSession httpSession);
+
+    ResponseEntity changeUserInfo(long userId, String jsonString, HttpSession httpSession);
 }
