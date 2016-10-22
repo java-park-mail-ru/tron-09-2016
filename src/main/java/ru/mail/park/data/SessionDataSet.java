@@ -1,6 +1,4 @@
-package ru.mail.park.dataSets;
-
-import com.google.gson.JsonObject;
+package ru.mail.park.data;
 
 /**
  * Created by zac on 21.10.16.
@@ -19,6 +17,7 @@ public class SessionDataSet {
         return sessionId;
     }
 
+    @SuppressWarnings("unused")
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
@@ -27,6 +26,7 @@ public class SessionDataSet {
         return userId;
     }
 
+    @SuppressWarnings("unused")
     public void setUserId(long userId) {
         this.userId = userId;
     }

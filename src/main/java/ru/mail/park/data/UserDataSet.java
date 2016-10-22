@@ -1,4 +1,4 @@
-package ru.mail.park.dataSets;
+package ru.mail.park.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,14 +46,17 @@ public class UserDataSet {
         return login;
     }
 
+    @SuppressWarnings("unused")
     public void setLogin(String login) {
         this.login = login;
     }
 
+    @SuppressWarnings("unused")
     public String getPassword() {
         return password;
     }
 
+    @SuppressWarnings("unused")
     public void setPassword(String password) {
         this.password = password;
     }
@@ -62,6 +65,7 @@ public class UserDataSet {
         return email;
     }
 
+    @SuppressWarnings("unused")
     public void setEmail(String email) {
         this.email = email;
     }

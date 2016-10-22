@@ -45,7 +45,8 @@ public class DataBaseService {
         final ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
                 builder.toString(), "root", "OlegJava");
 
-        PoolableConnectionFactory poolableConnectionFactory =
+        @SuppressWarnings("unused")
+        final PoolableConnectionFactory poolableConnectionFactory =
                 new PoolableConnectionFactory(connectionFactory, genericObjectPool,
                         null, null, false, true);
 

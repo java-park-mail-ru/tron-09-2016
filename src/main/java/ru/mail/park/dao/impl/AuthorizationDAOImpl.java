@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import ru.mail.park.dao.AuthorizationDAO;
-import ru.mail.park.dataSets.SessionDataSet;
+import ru.mail.park.data.SessionDataSet;
 
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
@@ -24,7 +24,6 @@ public class AuthorizationDAOImpl extends BaseDAOImpl implements AuthorizationDA
     public AuthorizationDAOImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-
 
     @Override
     public ResponseEntity login(String jsonString, HttpSession httpSession) {

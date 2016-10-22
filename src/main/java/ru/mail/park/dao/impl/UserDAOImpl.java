@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import ru.mail.park.dao.AuthorizationDAO;
 import ru.mail.park.dao.UserDAO;
-import ru.mail.park.dataSets.SessionDataSet;
-import ru.mail.park.dataSets.UserDataSet;
+import ru.mail.park.data.SessionDataSet;
+import ru.mail.park.data.UserDataSet;
 import ru.mail.park.responses.BadResponse;
 
 import javax.servlet.http.HttpSession;

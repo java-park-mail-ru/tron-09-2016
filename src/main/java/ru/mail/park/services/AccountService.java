@@ -2,7 +2,7 @@ package ru.mail.park.services;
 
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
-import ru.mail.park.dataSets.UserDataSet;
+import ru.mail.park.data.UserDataSet;
 
 import java.util.HashMap;
 import java.util.Map;
