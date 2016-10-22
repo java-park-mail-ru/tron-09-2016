@@ -98,4 +98,43 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
         return ResponseEntity.ok(user);
     }
 
+    @Override
+    public ResponseEntity deleteUser(long userId, HttpSession httpSession) {
+        final AuthorizationDAO authorizationDAO = new AuthorizationDAOImpl(dataSource);
+        final ResponseEntity responseEntity = authorizationDAO.authorizationCheck(httpSession);
+        if (responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
+        }
+
+        final Object object = responseEntity.getBody();
+        if (object instanceof SessionDataSet) {
+            final SessionDataSet session = (SessionDataSet) object;
+            if (session.getUserId() != userId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
+            }
+        }
+
+        try (Connection connection = dataSource.getConnection()) {
+            final String query = "DELETE FROM Sessions WHERE userId = ?";
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                ps.setLong(1, userId);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
+        }
+
+        try (Connection connection = dataSource.getConnection()) {
+            final String query = "DELETE FROM Users WHERE id = ?";
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                ps.setLong(1, userId);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
+        }
+
+        return ResponseEntity.ok("{}");
+    }
+
 }

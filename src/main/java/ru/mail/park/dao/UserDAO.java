@@ -12,4 +12,6 @@ public interface UserDAO {
     ResponseEntity getUserInfo(long userId, HttpSession httpSession);
 
     ResponseEntity changeUserInfo(long userId, String jsonString, HttpSession httpSession);
+
+    ResponseEntity deleteUser(long userId, HttpSession httpSession);
 }

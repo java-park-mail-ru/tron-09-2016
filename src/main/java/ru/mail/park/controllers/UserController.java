@@ -1,14 +1,9 @@
 package ru.mail.park.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.dao.UserDAO;
 import ru.mail.park.dao.impl.UserDAOImpl;
-import ru.mail.park.dataSets.UserDataSet;
-import ru.mail.park.services.AccountService;
-import ru.mail.park.services.SessionService;
 
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
@@ -44,20 +39,9 @@ public class UserController extends BaseController {
         return userDAO.changeUserInfo(userId, body, httpSession);
     }
 
-//    @RequestMapping(value = "/api/user/{userId}", method = RequestMethod.DELETE)
-//    public ResponseEntity deleteUser(@PathVariable long userId, HttpSession httpSession) {
-//        final UserDataSet sessionUser = sessionService.getUser(httpSession.getId());
-//        if (sessionUser == null){
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
-//        }
-//        if (sessionUser.getID() != userId){
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
-//        }
-//
-//        accountService.deleteUser(sessionUser.getLogin());
-//        sessionService.deleteAllSessions(sessionUser.getLogin());
-//
-//        return ResponseEntity.ok("{}");
-//    }
+    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteUser(@PathVariable long userId, HttpSession httpSession) {
+        return userDAO.deleteUser(userId, httpSession);
+    }
 
 }
