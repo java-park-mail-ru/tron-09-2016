@@ -9,10 +9,7 @@ import ru.mail.park.dao.RegistrationDAO;
 import ru.mail.park.dataSets.UserDataSet;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Created by zac on 21.10.16.
@@ -26,20 +23,19 @@ public class RegistrationDAOImpl extends BaseDAOImpl implements RegistrationDAO{
 
     @Override
     public ResponseEntity registration(String jsonString) {
-        UserDataSet user;
+        final JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+        final String login = jsonObject.get("login").getAsString();
+        final String password = jsonObject.get("password").getAsString();
+        final String email = jsonObject.get("email").getAsString();
+        if (StringUtils.isEmpty(login)
+                || StringUtils.isEmpty(password)
+                || StringUtils.isEmpty(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+        }
+
+        final UserDataSet user = new UserDataSet(jsonObject);
         try (Connection connection = dataSource.getConnection()) {
-            final JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
-            final String login = jsonObject.get("login").getAsString();
-            final String password = jsonObject.get("password").getAsString();
-            final String email = jsonObject.get("email").getAsString();
-            if (StringUtils.isEmpty(login)
-                    || StringUtils.isEmpty(password)
-                    || StringUtils.isEmpty(email)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
-            }
-            user = new UserDataSet(jsonObject);
-            String query = new StringBuilder("INSERT INTO Users ")
-                    .append("(login, password, email) VALUES (?, ?, ?)").toString();
+            final String query = "INSERT INTO Users(login, password, email) VALUES (?, ?, ?)";
             try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, login);
                 ps.setString(2, password);
@@ -50,7 +46,7 @@ public class RegistrationDAOImpl extends BaseDAOImpl implements RegistrationDAO{
                     user.setId(resultSet.getLong(1));
                 }
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
 
