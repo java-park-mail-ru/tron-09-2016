@@ -1,13 +1,12 @@
 package ru.mail.park.dao.impl;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import ru.mail.park.dao.AuthorizationDAO;
 import ru.mail.park.data.SessionDataSet;
 import ru.mail.park.data.UserDataSet;
 
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,29 +17,27 @@ import java.sql.SQLException;
  * Created by zac on 21.10.16.
  */
 
-public class AuthorizationDAOImpl extends BaseDAOImpl implements AuthorizationDAO {
+@Repository
+public class AuthorizationDAOImpl implements AuthorizationDAO {
+    protected DataSource dataSource;
 
+    @Autowired
     public AuthorizationDAOImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
+    @Nullable
     @Override
-    public ResponseEntity login(UserDataSet user, HttpSession httpSession) {
-        final String login = user.getLogin();
-        final String password = user.getPassword();
-        if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
-        }
-
+    public SessionDataSet login(UserDataSet user, String sessionId) {
         final SessionDataSet session;
         try (Connection connection = dataSource.getConnection()) {
             String query = "SELECT * FROM Users WHERE login = ? AND password = ?";
             try (PreparedStatement ps = connection.prepareStatement(query)) {
-                ps.setString(1, login);
-                ps.setString(2, password);
+                ps.setString(1, user.getLogin());
+                ps.setString(2, user.getPassword());
                 try (ResultSet resultSet = ps.executeQuery()) {
                     resultSet.next();
-                    session = new SessionDataSet(httpSession.getId(), resultSet.getLong("id"));
+                    session = new SessionDataSet(sessionId, resultSet.getLong("id"));
                 }
             }
             query = "INSERT INTO Sessions(sessionId, userId) VALUES (?, ?)";
@@ -50,17 +47,17 @@ public class AuthorizationDAOImpl extends BaseDAOImpl implements AuthorizationDA
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return null;
         }
 
-        return ResponseEntity.ok(session);
+        return session;
     }
 
+    @Nullable
     @Override
-    public ResponseEntity authorizationCheck(HttpSession httpSession) {
+    public SessionDataSet authorizationCheck(String sessionId) {
         final SessionDataSet session;
         try (Connection connection = dataSource.getConnection()) {
-            final String sessionId = httpSession.getId();
             final String query = "SELECT * FROM Sessions WHERE sessionId = ?";
             try (PreparedStatement ps = connection.prepareStatement(query)) {
                 ps.setString(1, sessionId);
@@ -70,26 +67,23 @@ public class AuthorizationDAOImpl extends BaseDAOImpl implements AuthorizationDA
                 }
             }
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+            return null;
         }
 
-        return ResponseEntity.ok(session);
+        return session;
     }
 
     @Override
-    public ResponseEntity logout(HttpSession httpSession) {
+    public void logout(String sessionId) {
         try (Connection connection = dataSource.getConnection()) {
-            final String sessionId = httpSession.getId();
             final String query = "DELETE FROM Sessions WHERE sessionId = ?";
             try (PreparedStatement ps = connection.prepareStatement(query)) {
                 ps.setString(1, sessionId);
                 ps.executeUpdate();
             }
-        } catch (SQLException e) {
-            return ResponseEntity.ok("{}");
-        }
+        } catch (SQLException ignored) {
 
-        return ResponseEntity.ok("{}");
+        }
     }
 
 }

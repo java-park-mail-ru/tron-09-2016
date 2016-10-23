@@ -1,20 +1,17 @@
 package ru.mail.park.dao;
 
-import org.springframework.http.ResponseEntity;
 import ru.mail.park.data.UserDataSet;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * Created by zac on 21.10.16.
  */
 
 public interface UserDAO {
-    ResponseEntity registration(UserDataSet user);
+    UserDataSet registration(UserDataSet user);
 
-    ResponseEntity getUserInfo(long userId, HttpSession httpSession);
+    UserDataSet getUserInfo(long userId, String sessionId);
 
-    ResponseEntity changeUserInfo(long userId, UserDataSet changesForUser, HttpSession httpSession);
+    UserDataSet changeUserInfo(long userId, UserDataSet changesForUser, String sessionId);
 
-    ResponseEntity deleteUser(long userId, HttpSession httpSession);
+    int deleteUser(long userId, String sessionId);
 }

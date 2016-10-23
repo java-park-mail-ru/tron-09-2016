@@ -31,6 +31,7 @@ public class UserDataSet {
         email = resultSet.getString("email");
     }
 
+    @SuppressWarnings("unused")
     public long getId() {
         return id;
     }

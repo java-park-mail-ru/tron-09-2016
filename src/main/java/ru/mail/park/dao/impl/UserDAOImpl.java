@@ -1,15 +1,12 @@
 package ru.mail.park.dao.impl;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
-import ru.mail.park.dao.AuthorizationDAO;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import ru.mail.park.dao.UserDAO;
-import ru.mail.park.data.SessionDataSet;
 import ru.mail.park.data.UserDataSet;
-import ru.mail.park.responses.BadResponse;
+import ru.mail.park.responses.Status;
 
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.sql.*;
 
@@ -17,30 +14,24 @@ import java.sql.*;
  * Created by zac on 21.10.16.
  */
 
-public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
-    private static final BadResponse BAD_RESPONSE = new BadResponse(403, "Another user");
+@Repository
+public class UserDAOImpl implements UserDAO {
+    protected DataSource dataSource;
 
+    @Autowired
     public UserDAOImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
+    @Nullable
     @Override
-    public ResponseEntity registration(UserDataSet user) {
-        final String login = user.getLogin();
-        final String password = user.getPassword();
-        final String email = user.getEmail();
-        if (StringUtils.isEmpty(login)
-                || StringUtils.isEmpty(password)
-                || StringUtils.isEmpty(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
-        }
-
+    public UserDataSet registration(UserDataSet user) {
         try (Connection connection = dataSource.getConnection()) {
             final String query = "INSERT INTO Users(login, password, email) VALUES (?, ?, ?)";
             try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, login);
-                ps.setString(2, password);
-                ps.setString(3, email);
+                ps.setString(1, user.getLogin());
+                ps.setString(2, user.getPassword());
+                ps.setString(3, user.getEmail());
                 ps.executeUpdate();
                 try (ResultSet resultSet = ps.getGeneratedKeys()) {
                     resultSet.next();
@@ -48,20 +39,15 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
                 }
             }
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+            return null;
         }
 
-        return ResponseEntity.ok(user);
+        return user;
     }
 
+    @Nullable
     @Override
-    public ResponseEntity getUserInfo(long userId, HttpSession httpSession) {
-        final AuthorizationDAO authorizationDAO = new AuthorizationDAOImpl(dataSource);
-        final ResponseEntity responseEntity = authorizationDAO.authorizationCheck(httpSession);
-        if (responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
-        }
-
+    public UserDataSet getUserInfo(long userId, String sessionId) {
         final UserDataSet user;
         try (Connection connection = dataSource.getConnection()) {
             final String query = "SELECT * FROM Users WHERE id = ?";
@@ -73,38 +59,19 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
                 }
             }
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+            return null;
         }
 
-        return ResponseEntity.ok(user);
+        return user;
     }
 
+    @Nullable
     @Override
-    public ResponseEntity changeUserInfo(long userId, UserDataSet changesForUser, HttpSession httpSession) {
-        final AuthorizationDAO authorizationDAO = new AuthorizationDAOImpl(dataSource);
-        final ResponseEntity responseEntity = authorizationDAO.authorizationCheck(httpSession);
-        if (responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
-        }
-
-        final Object object = responseEntity.getBody();
-        if (object instanceof SessionDataSet) {
-            final SessionDataSet session = (SessionDataSet) object;
-            if (session.getUserId() != userId) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
-            }
-        }
-
+    public UserDataSet changeUserInfo(long userId, UserDataSet changesForUser, String sessionId) {
+        final UserDataSet changedUser;
         final String login = changesForUser.getLogin();
         final String password = changesForUser.getPassword();
         final String email = changesForUser.getEmail();
-        if (StringUtils.isEmpty(login)
-                || StringUtils.isEmpty(password)
-                || StringUtils.isEmpty(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
-        }
-
-        final UserDataSet changedUser;
         try (Connection connection = dataSource.getConnection()) {
             final String query = "UPDATE Users SET login = ?, password = ?, email = ? WHERE id = ?";
             try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -116,28 +83,14 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
                 changedUser = new UserDataSet(userId, login, password, email);
             }
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
+            return null;
         }
 
-        return ResponseEntity.ok(changedUser);
+        return changedUser;
     }
 
     @Override
-    public ResponseEntity deleteUser(long userId, HttpSession httpSession) {
-        final AuthorizationDAO authorizationDAO = new AuthorizationDAOImpl(dataSource);
-        final ResponseEntity responseEntity = authorizationDAO.authorizationCheck(httpSession);
-        if (responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
-        }
-
-        final Object object = responseEntity.getBody();
-        if (object instanceof SessionDataSet) {
-            final SessionDataSet session = (SessionDataSet) object;
-            if (session.getUserId() != userId) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
-            }
-        }
-
+    public int deleteUser(long userId, String sessionId) {
         try (Connection connection = dataSource.getConnection()) {
             final String query = "DELETE FROM Sessions WHERE userId = ?";
             try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -145,7 +98,7 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
+            return Status.ERROR;
         }
 
         try (Connection connection = dataSource.getConnection()) {
@@ -155,10 +108,10 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
+            return Status.ERROR;
         }
 
-        return ResponseEntity.ok("{}");
+        return Status.OK;
     }
 
 }

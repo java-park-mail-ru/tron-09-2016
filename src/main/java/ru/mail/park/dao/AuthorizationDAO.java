@@ -1,18 +1,16 @@
 package ru.mail.park.dao;
 
-import org.springframework.http.ResponseEntity;
+import ru.mail.park.data.SessionDataSet;
 import ru.mail.park.data.UserDataSet;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * Created by zac on 21.10.16.
  */
 
 public interface AuthorizationDAO {
-    ResponseEntity login(UserDataSet user, HttpSession httpSession);
+    SessionDataSet login(UserDataSet user, String sessionId);
 
-    ResponseEntity authorizationCheck(HttpSession httpSession);
+    SessionDataSet authorizationCheck(String sessionId);
 
-    ResponseEntity logout(HttpSession httpSession);
+    void logout(String sessionId);
 }
