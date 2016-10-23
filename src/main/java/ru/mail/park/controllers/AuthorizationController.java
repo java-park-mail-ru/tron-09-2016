@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.dao.AuthorizationDAO;
 import ru.mail.park.dao.impl.AuthorizationDAOImpl;
+import ru.mail.park.data.UserDataSet;
 
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
@@ -28,7 +29,7 @@ public class AuthorizationController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity login(@RequestBody String body, HttpSession httpSession) {
+    public ResponseEntity login(@RequestBody UserDataSet body, HttpSession httpSession) {
         return authorizationDAO.login(body, httpSession);
     }
 

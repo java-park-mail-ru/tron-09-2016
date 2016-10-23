@@ -1,6 +1,7 @@
 package ru.mail.park.dao;
 
 import org.springframework.http.ResponseEntity;
+import ru.mail.park.data.UserDataSet;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,11 +10,11 @@ import javax.servlet.http.HttpSession;
  */
 
 public interface UserDAO {
-    ResponseEntity registration(String jsonString);
+    ResponseEntity registration(UserDataSet user);
 
     ResponseEntity getUserInfo(long userId, HttpSession httpSession);
 
-    ResponseEntity changeUserInfo(long userId, String jsonString, HttpSession httpSession);
+    ResponseEntity changeUserInfo(long userId, UserDataSet changesForUser, HttpSession httpSession);
 
     ResponseEntity deleteUser(long userId, HttpSession httpSession);
 }

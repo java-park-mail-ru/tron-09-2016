@@ -1,12 +1,11 @@
 package ru.mail.park.dao.impl;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import ru.mail.park.dao.AuthorizationDAO;
 import ru.mail.park.data.SessionDataSet;
+import ru.mail.park.data.UserDataSet;
 
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
@@ -26,10 +25,9 @@ public class AuthorizationDAOImpl extends BaseDAOImpl implements AuthorizationDA
     }
 
     @Override
-    public ResponseEntity login(String jsonString, HttpSession httpSession) {
-        final JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
-        final String login = jsonObject.get("login").getAsString();
-        final String password = jsonObject.get("password").getAsString();
+    public ResponseEntity login(UserDataSet user, HttpSession httpSession) {
+        final String login = user.getLogin();
+        final String password = user.getPassword();
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }

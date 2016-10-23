@@ -1,6 +1,7 @@
 package ru.mail.park.dao;
 
 import org.springframework.http.ResponseEntity;
+import ru.mail.park.data.UserDataSet;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,7 +10,7 @@ import javax.servlet.http.HttpSession;
  */
 
 public interface AuthorizationDAO {
-    ResponseEntity login(String jsonString, HttpSession httpSession);
+    ResponseEntity login(UserDataSet user, HttpSession httpSession);
 
     ResponseEntity authorizationCheck(HttpSession httpSession);
 

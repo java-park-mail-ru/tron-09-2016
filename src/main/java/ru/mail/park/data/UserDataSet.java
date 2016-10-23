@@ -13,15 +13,12 @@ public class UserDataSet {
     private String password;
     private String email;
 
-    public UserDataSet(long id, String login, String password, String email) {
-        this.id = id;
-        this.login = login;
-        this.password = password;
-        this.email = email;
+    public UserDataSet() {
+
     }
 
-    public UserDataSet(String login, String password, String email) {
-        this.id = -1;
+    public UserDataSet(long id, String login, String password, String email) {
+        this.id = id;
         this.login = login;
         this.password = password;
         this.email = email;

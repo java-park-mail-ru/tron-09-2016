@@ -1,7 +1,5 @@
 package ru.mail.park.dao.impl;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -27,18 +25,16 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
     }
 
     @Override
-    public ResponseEntity registration(String jsonString) {
-        final JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
-        final String login = jsonObject.get("login").getAsString();
-        final String password = jsonObject.get("password").getAsString();
-        final String email = jsonObject.get("email").getAsString();
+    public ResponseEntity registration(UserDataSet user) {
+        final String login = user.getLogin();
+        final String password = user.getPassword();
+        final String email = user.getEmail();
         if (StringUtils.isEmpty(login)
                 || StringUtils.isEmpty(password)
                 || StringUtils.isEmpty(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
 
-        final UserDataSet user;
         try (Connection connection = dataSource.getConnection()) {
             final String query = "INSERT INTO Users(login, password, email) VALUES (?, ?, ?)";
             try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -46,7 +42,6 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
                 ps.setString(2, password);
                 ps.setString(3, email);
                 ps.executeUpdate();
-                user = new UserDataSet(login, password, email);
                 try (ResultSet resultSet = ps.getGeneratedKeys()) {
                     resultSet.next();
                     user.setId(resultSet.getLong(1));
@@ -85,7 +80,7 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
     }
 
     @Override
-    public ResponseEntity changeUserInfo(long userId, String jsonString, HttpSession httpSession) {
+    public ResponseEntity changeUserInfo(long userId, UserDataSet changesForUser, HttpSession httpSession) {
         final AuthorizationDAO authorizationDAO = new AuthorizationDAOImpl(dataSource);
         final ResponseEntity responseEntity = authorizationDAO.authorizationCheck(httpSession);
         if (responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED) {
@@ -100,17 +95,16 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
             }
         }
 
-        final JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
-        final String login = jsonObject.get("login").getAsString();
-        final String password = jsonObject.get("password").getAsString();
-        final String email = jsonObject.get("email").getAsString();
+        final String login = changesForUser.getLogin();
+        final String password = changesForUser.getPassword();
+        final String email = changesForUser.getEmail();
         if (StringUtils.isEmpty(login)
                 || StringUtils.isEmpty(password)
                 || StringUtils.isEmpty(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
 
-        final UserDataSet user;
+        final UserDataSet changedUser;
         try (Connection connection = dataSource.getConnection()) {
             final String query = "UPDATE Users SET login = ?, password = ?, email = ? WHERE id = ?";
             try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -119,13 +113,13 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
                 ps.setString(3, email);
                 ps.setLong(4, userId);
                 ps.executeUpdate();
-                user = new UserDataSet(userId, login, password, email);
+                changedUser = new UserDataSet(userId, login, password, email);
             }
         } catch (SQLException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(changedUser);
     }
 
     @Override

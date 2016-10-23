@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.dao.UserDAO;
 import ru.mail.park.dao.impl.UserDAOImpl;
+import ru.mail.park.data.UserDataSet;
 
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
@@ -28,7 +29,7 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity registration(@RequestBody String body){
+    public ResponseEntity registration(@RequestBody UserDataSet body) {
         return userDAO.registration(body);
     }
 
@@ -39,7 +40,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
     public ResponseEntity changeUserInfo(@PathVariable long userId,
-                                         @RequestBody String body,
+                                         @RequestBody UserDataSet body,
                                          HttpSession httpSession) {
         return userDAO.changeUserInfo(userId, body, httpSession);
     }
