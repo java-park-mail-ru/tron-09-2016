@@ -1,4 +1,4 @@
-package ru.mail.park.services;
+package ru.mail.park;
 
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
@@ -15,7 +15,7 @@ import javax.sql.DataSource;
  */
 
 @Configuration
-public class DataBaseService {
+public class DataBaseConnector {
 
     public static final int MAX_IDLE = 30;
     public static final int MAX_ACTIVE = 200;
