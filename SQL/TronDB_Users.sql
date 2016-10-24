@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.15, for Linux (x86_64)
 --
--- Host: localhost    Database: ForumDB
+-- Host: localhost    Database: TronDB
 -- ------------------------------------------------------
 -- Server version	5.7.15-0ubuntu0.16.04.1
 
@@ -16,24 +16,22 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Forum`
+-- Table structure for table `Users`
 --
 
-DROP TABLE IF EXISTS `Forum`;
+DROP TABLE IF EXISTS `Users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Forum` (
+CREATE TABLE `Users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `short_name` varchar(255) NOT NULL,
-  `user` varchar(255) NOT NULL,
-  PRIMARY KEY (`short_name`),
-  UNIQUE KEY `Forum_name_uindex` (`name`),
-  UNIQUE KEY `Forum_id_uindex` (`id`),
-  UNIQUE KEY `Forum_short_name_uindex` (`short_name`),
-  KEY `fk_Forum_1_idx` (`user`),
-  CONSTRAINT `Forum_User_email_fk` FOREIGN KEY (`user`) REFERENCES `User` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `login` varchar(30) NOT NULL,
+  `password` varchar(30) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `Users_login_uindex` (`login`),
+  UNIQUE KEY `Users_email_uindex` (`email`),
+  UNIQUE KEY `Users_id_uindex` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -45,4 +43,4 @@ CREATE TABLE `Forum` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-10-24 10:28:22
+-- Dump completed on 2016-10-24 17:29:35

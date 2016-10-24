@@ -32,9 +32,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
                 || StringUtils.isEmpty(user.getPassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
+
         final String sessionId = httpSession.getId();
         final SessionDataSet session = authorizationDAO.login(user, sessionId);
         if (session != null) {
+            httpSession.setAttribute(sessionId, session.getUserId());
             return ResponseEntity.ok(session);
         }
 
@@ -44,12 +46,15 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public ResponseEntity authorizationCheck(HttpSession httpSession) {
         final String sessionId = httpSession.getId();
-        final SessionDataSet session = authorizationDAO.authorizationCheck(sessionId);
-        if (session != null) {
-            return ResponseEntity.ok(session);
-        }
+        Object object = httpSession.getValue(sessionId);
+        if (object instanceof )
+        return ResponseEntity.ok("{" +  + "}");
+//        final SessionDataSet session = authorizationDAO.authorizationCheck(sessionId);
+//        if (session != null) {
+//            return ResponseEntity.ok(session);
+//        }
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
     }
 
     @Override

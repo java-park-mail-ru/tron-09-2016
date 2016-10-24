@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.15, for Linux (x86_64)
 --
--- Host: localhost    Database: ForumDB
+-- Host: localhost    Database: TronDB
 -- ------------------------------------------------------
 -- Server version	5.7.15-0ubuntu0.16.04.1
 
@@ -16,22 +16,19 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `User`
+-- Table structure for table `Sessions`
 --
 
-DROP TABLE IF EXISTS `User`;
+DROP TABLE IF EXISTS `Sessions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `User` (
-  `about` text,
-  `email` varchar(255) NOT NULL,
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `isAnonymous` tinyint(1) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`email`),
-  UNIQUE KEY `User_id_uindex` (`id`),
-  UNIQUE KEY `User_email_uindex` (`email`)
+CREATE TABLE `Sessions` (
+  `sessionId` varchar(80) NOT NULL,
+  `userId` int(11) NOT NULL,
+  PRIMARY KEY (`sessionId`,`userId`),
+  UNIQUE KEY `Sessions_sessionId_uindex` (`sessionId`),
+  KEY `Sessions_Users_id_fk` (`userId`),
+  CONSTRAINT `Sessions_Users_id_fk` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -44,4 +41,4 @@ CREATE TABLE `User` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-10-24 10:28:22
+-- Dump completed on 2016-10-24 17:29:35
