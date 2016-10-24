@@ -1,0 +1,11 @@
+language: java
+jdk:
+  - oraclejdk8
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: FhiJ3DMPIrCC6e5MDJG5gf8eNTz55X784asJH4MMTGn+gFpmhb13lOZ39PGMnkCm20Je724QDAjjRt95efqBKejO0jDptjAVzxfb3GPl6EzN9YrojhRFK/qPbIkl1vJKjwB6AUUSxI01rmX/9A4A44bUYPPYVlMdpbWeBqwyFl8gKABKQyw+goLI4CALyzMw76G8PsDfQ0P8JF3Vp2LtuDWdfNPJbIrKEz+k/eE/5TdIXyDrBqDnnuvXABsHf3ult0fF/xKZsCMWSf/RB9W/9BGhY34y9HEbjZR6putHVnN6UK6y/DLZu4XcN+VWBIY9UMek6LkkDNqsHOum28I5YpSMdSoaG+nw8w4Ay3L+PGsEYQ56NyNSZfnOPRGixPxnz2h0GmVtyD0Call9HEWF9gXtaJmOkzc0XpAdxzXWUdhZat6qDe12Rq63w4xKmWvdJKdM892zf9ENxet+EmQNRX8wyS646J3G3bCiKChOCVTm1RHqWPdO0Buxrv5IEaDV33exYn+lsBLlu+yDQZZaS53J/GKXwxd3uE5Yax4E1WfC0YCu6genqBdJ0Frg4hs6eVmDnAwCWERuTGNDYEPN2UllUzapMRjrCnoM+lAs1HXvmQOcglTgmr7qMeY9n3nM47ErzBqwNegGguWzQP1LXVaqNthRC/mLkD6CJExbzes=
+  app: tron-09-2016
+  on:
+    repo: BOG8/tron-09-2016
