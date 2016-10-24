@@ -5,14 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import ru.mail.park.dao.AuthorizationDAO;
 import ru.mail.park.dao.UserDAO;
-import ru.mail.park.dao.impl.AuthorizationDAOImpl;
 import ru.mail.park.dao.impl.UserDAOImpl;
-import ru.mail.park.data.SessionDataSet;
 import ru.mail.park.data.UserDataSet;
 import ru.mail.park.responses.BadResponse;
 import ru.mail.park.responses.Status;
+import ru.mail.park.services.AuthorizationService;
 import ru.mail.park.services.UserService;
 
 import javax.servlet.http.HttpSession;
@@ -26,12 +24,12 @@ public class UserServiceImpl implements UserService {
     private static final BadResponse BAD_RESPONSE = new BadResponse(403, "Another user");
 
     private UserDAO userDAO;
-    private AuthorizationDAO authorizationDAO;
+    private AuthorizationService authorizationService;
 
     @Autowired
-    public UserServiceImpl(UserDAOImpl userDAOImpl, AuthorizationDAOImpl authorizationDAOImpl) {
+    public UserServiceImpl(UserDAOImpl userDAOImpl, AuthorizationServiceImpl authorizationService) {
         this.userDAO = userDAOImpl;
-        this.authorizationDAO = authorizationDAOImpl;
+        this.authorizationService = authorizationService;
     }
 
     @Override
@@ -52,12 +50,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity getUserInfo(long userId, HttpSession httpSession) {
-        final String sessionId = httpSession.getId();
-        final SessionDataSet session = authorizationDAO.authorizationCheck(sessionId);
-        if (session == null) {
+        final ResponseEntity responseEntity = authorizationService.authorizationCheck(httpSession);
+        if (responseEntity.getStatusCodeValue() != Status.OK) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
         }
 
+        final String sessionId = httpSession.getId();
         final UserDataSet user = userDAO.getUserInfo(userId, sessionId);
         if (user != null) {
             return ResponseEntity.ok(user);
@@ -70,14 +68,17 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity changeUserInfo(long userId,
                                          UserDataSet changesForUser,
                                          HttpSession httpSession) {
+        final ResponseEntity responseEntity = authorizationService.authorizationCheck(httpSession);
+        if (responseEntity.getStatusCodeValue() != Status.OK) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
+        }
+
         final String sessionId = httpSession.getId();
-        final SessionDataSet session = authorizationDAO.authorizationCheck(sessionId);
-        if (session == null) {
+        final Object object = httpSession.getAttribute(sessionId);
+        if (idCheck(object, userId) != Status.OK) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
-        if (session.getUserId() != userId) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
-        }
+
         if (StringUtils.isEmpty(changesForUser.getLogin())
                 || StringUtils.isEmpty(changesForUser.getPassword())
                 || StringUtils.isEmpty(changesForUser.getEmail())) {
@@ -94,20 +95,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity deleteUser(long userId, HttpSession httpSession) {
-        final String sessionId = httpSession.getId();
-        final SessionDataSet session = authorizationDAO.authorizationCheck(sessionId);
-        if (session == null) {
+        final ResponseEntity responseEntity = authorizationService.authorizationCheck(httpSession);
+        if (responseEntity.getStatusCodeValue() != Status.OK) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
-        if (session.getUserId() != userId) {
+
+        final String sessionId = httpSession.getId();
+        final Object object = httpSession.getAttribute(sessionId);
+        if (idCheck(object, userId) != Status.OK) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
 
         final int code = userDAO.deleteUser(userId, sessionId);
         if (code == Status.OK) {
+            httpSession.removeAttribute(sessionId);
             return ResponseEntity.ok("{}");
         }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
+    }
+
+    public int idCheck(Object object, long userId) {
+        if (object instanceof Long) {
+            final Long sessionUserId = (Long) object;
+            if (sessionUserId != userId) {
+                return Status.ERROR;
+            }
+        } else {
+            return Status.ERROR;
+        }
+
+        return Status.OK;
     }
 }

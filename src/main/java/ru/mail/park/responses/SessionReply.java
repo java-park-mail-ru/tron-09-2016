@@ -1,18 +1,19 @@
-package ru.mail.park.data;
+package ru.mail.park.responses;
 
 /**
  * Created by zac on 21.10.16.
  */
 
-public class SessionDataSet {
+public class SessionReply {
     private String sessionId;
-    private long userId;
+    private Long userId;
 
-    public SessionDataSet(String sessionId, long userId) {
+    public SessionReply(String sessionId, Long userId) {
         this.sessionId = sessionId;
         this.userId = userId;
     }
 
+    @SuppressWarnings("unused")
     public String getSessionId() {
         return sessionId;
     }
@@ -22,7 +23,8 @@ public class SessionDataSet {
         this.sessionId = sessionId;
     }
 
-    public long getUserId() {
+    @SuppressWarnings("unused")
+    public Long getUserId() {
         return userId;
     }
 

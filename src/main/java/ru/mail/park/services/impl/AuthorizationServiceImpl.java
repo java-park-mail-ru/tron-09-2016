@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import ru.mail.park.dao.AuthorizationDAO;
-import ru.mail.park.dao.impl.AuthorizationDAOImpl;
-import ru.mail.park.data.SessionDataSet;
+import ru.mail.park.dao.UserDAO;
+import ru.mail.park.dao.impl.UserDAOImpl;
+import ru.mail.park.responses.SessionReply;
 import ru.mail.park.data.UserDataSet;
 import ru.mail.park.services.AuthorizationService;
 
@@ -19,11 +19,11 @@ import javax.servlet.http.HttpSession;
 
 @Service
 public class AuthorizationServiceImpl implements AuthorizationService {
-    private AuthorizationDAO authorizationDAO;
+    private UserDAO userDAO;
 
     @Autowired
-    public AuthorizationServiceImpl(AuthorizationDAOImpl authorizationDAOImpl) {
-        this.authorizationDAO = authorizationDAOImpl;
+    public AuthorizationServiceImpl(UserDAOImpl userDAOImpl) {
+        this.userDAO = userDAOImpl;
     }
 
     @Override
@@ -34,10 +34,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
 
         final String sessionId = httpSession.getId();
-        final SessionDataSet session = authorizationDAO.login(user, sessionId);
-        if (session != null) {
-            httpSession.setAttribute(sessionId, session.getUserId());
-            return ResponseEntity.ok(session);
+        final Long userId = userDAO.getIdByLogin(user);
+        if (userId != null) {
+            httpSession.setAttribute(sessionId, userId);
+            final SessionReply sessionReply = new SessionReply(sessionId, userId);
+            return ResponseEntity.ok(sessionReply);
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
@@ -46,20 +47,20 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public ResponseEntity authorizationCheck(HttpSession httpSession) {
         final String sessionId = httpSession.getId();
-        Object object = httpSession.getValue(sessionId);
-        if (object instanceof )
-        return ResponseEntity.ok("{" +  + "}");
-//        final SessionDataSet session = authorizationDAO.authorizationCheck(sessionId);
-//        if (session != null) {
-//            return ResponseEntity.ok(session);
-//        }
+        final Object object = httpSession.getAttribute(sessionId);
+        if (object instanceof Long) {
+            final Long userId = (Long) object;
+            final SessionReply sessionReply = new SessionReply(sessionId, userId);
+            return ResponseEntity.ok(sessionReply);
+        }
 
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
     }
 
     @Override
     public ResponseEntity logout(HttpSession httpSession) {
-        authorizationDAO.logout(httpSession.getId());
+        final String sessionId = httpSession.getId();
+        httpSession.removeAttribute(sessionId);
 
         return ResponseEntity.ok("{}");
     }

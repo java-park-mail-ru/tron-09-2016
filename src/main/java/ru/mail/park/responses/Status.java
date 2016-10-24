@@ -5,6 +5,6 @@ package ru.mail.park.responses;
  */
 
 public final class Status {
-    public static final int OK = 0;
-    public static final int ERROR = 1;
+    public static final int OK = 200;
+    public static final int ERROR = -1;
 }

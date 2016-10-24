@@ -114,4 +114,24 @@ public class UserDAOImpl implements UserDAO {
         return Status.OK;
     }
 
+    @Nullable
+    @Override
+    public Long getIdByLogin(UserDataSet user) {
+        final Long userId;
+        try (Connection connection = dataSource.getConnection()) {
+            final String query = "SELECT * FROM Users WHERE login = ? AND password = ?";
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                ps.setString(1, user.getLogin());
+                ps.setString(2, user.getPassword());
+                try (ResultSet resultSet = ps.executeQuery()) {
+                    resultSet.next();
+                    userId = resultSet.getLong("id");
+                }
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+
+        return userId;
+    }
 }

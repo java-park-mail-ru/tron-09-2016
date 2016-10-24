@@ -8,16 +8,17 @@ import java.sql.SQLException;
  */
 
 public class UserDataSet {
-    private long id;
+    private Long id;
     private String login;
     private String password;
     private String email;
 
+    @SuppressWarnings("unused")
     public UserDataSet() {
 
     }
 
-    public UserDataSet(long id, String login, String password, String email) {
+    public UserDataSet(Long id, String login, String password, String email) {
         this.id = id;
         this.login = login;
         this.password = password;
@@ -32,11 +33,11 @@ public class UserDataSet {
     }
 
     @SuppressWarnings("unused")
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
