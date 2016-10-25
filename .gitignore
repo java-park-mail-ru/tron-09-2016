@@ -25,6 +25,7 @@
 /.idea/
 /L1.3.iml
 /javaNew.iml
+/TronServer.iml
 
 # Mongo Explorer plugin:
 .idea/mongoSettings.xml
