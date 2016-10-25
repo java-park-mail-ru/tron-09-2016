@@ -5,5 +5,5 @@ CREATE TABLE `Users` (
   `email` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Users_login_uindex` (`login`),
-  UNIQUE KEY `Users_email_uindex` (`email`),
+  UNIQUE KEY `Users_email_uindex` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
