@@ -3,6 +3,7 @@ package ru.mail.park.dao.impl;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.mail.park.dao.UserDAO;
 import ru.mail.park.data.UserDataSet;
 import ru.mail.park.responses.Status;
@@ -15,6 +16,7 @@ import java.sql.*;
  */
 
 @Repository
+@Transactional
 public class UserDAOImpl implements UserDAO {
     protected DataSource dataSource;
 
@@ -91,16 +93,6 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public int deleteUser(long userId, String sessionId) {
-        try (Connection connection = dataSource.getConnection()) {
-            final String query = "DELETE FROM Sessions WHERE userId = ?";
-            try (PreparedStatement ps = connection.prepareStatement(query)) {
-                ps.setLong(1, userId);
-                ps.executeUpdate();
-            }
-        } catch (SQLException e) {
-            return Status.ERROR;
-        }
-
         try (Connection connection = dataSource.getConnection()) {
             final String query = "DELETE FROM Users WHERE id = ?";
             try (PreparedStatement ps = connection.prepareStatement(query)) {

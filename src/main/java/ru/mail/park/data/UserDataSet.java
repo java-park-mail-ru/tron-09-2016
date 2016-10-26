@@ -1,5 +1,7 @@
 package ru.mail.park.data;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -18,7 +20,7 @@ public class UserDataSet {
 
     }
 
-    public UserDataSet(Long id, String login, String password, String email) {
+    public UserDataSet(@Nullable Long id, String login, String password, String email) {
         this.id = id;
         this.login = login;
         this.password = password;
