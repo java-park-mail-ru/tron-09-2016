@@ -34,7 +34,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
 
         final String sessionId = httpSession.getId();
-        final Long userId = userDAO.getIdByLogin(user);
+        final Long userId = userDAO.getIdByLogin(user.getLogin(), user.getPassword());
         if (userId != null) {
             httpSession.setAttribute(sessionId, userId);
             final SessionReply sessionReply = new SessionReply(sessionId, userId);
