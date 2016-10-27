@@ -88,8 +88,25 @@ public class ControllerTest {
   @Test
   public void testFailAuth() throws Exception {
     mockMvc.perform(get("/api/session")
-        .session(mockHttpSession))
-        .andExpect(status().isUnauthorized());
+            .session(mockHttpSession))
+            .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  public void testLogout() throws Exception {
+    mockMvc.perform(delete("/api/session")
+            .session(mockHttpSession))
+            .andExpect(status().isOk());
+  }
+
+  @Test
+  public void testLoginThenLogout() throws Exception {
+    testLogin();
+    mockMvc.perform(delete("/api/session")
+            .session(mockHttpSession))
+            .andExpect(status().isOk());
+
+    testFailAuth();
   }
 
   @Test
@@ -112,86 +129,60 @@ public class ControllerTest {
   }
 
   @Test
-  public void test() throws Exception {
-    // registration user
-    // mockMvc.perform(post("/api/user")
-    // .content("{\"login\":\"testLogin\",\"password\":\"testPass\",\"email\": \"test@mail.ru\"}")
-    // .contentType(MediaType.APPLICATION_JSON))
-    // .andExpect(status().isOk());
-    // registration existing user
-    mockMvc.perform(post("/api/user")
-        .content("{\"login\":\"testLogin\",\"password\":\"passTest\",\"email\": \"test2@mail.ru\"}")
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isForbidden());
-
-    // fail login
-    mockMvc.perform(post("/api/session")
-        .content("{\"login\":\"testLogin\",\"password\":\"noTestPass\"}")
-        .contentType(MediaType.APPLICATION_JSON)
-        .session(mockHttpSession))
-        .andExpect(status().isBadRequest());
-    // login
-    mockMvc.perform(post("/api/session")
-        .content("{\"login\":\"testLogin\",\"password\":\"testPass\"}")
-        .contentType(MediaType.APPLICATION_JSON)
-        .session(mockHttpSession))
-        .andExpect(status().isOk());
-    // testAuth
-    mockMvc.perform(get("/api/session")
-        .session(mockHttpSession))
-        .andExpect(status().isOk());
-    // fail delete
-    mockMvc.perform(delete("/api/session"))
-        .andExpect(status().isOk());
-    // testAuth
-    mockMvc.perform(get("/api/session")
-        .session(mockHttpSession))
-        .andExpect(status().isOk());
-    // delete
-    mockMvc.perform(delete("/api/session")
-        .session(mockHttpSession))
-        .andExpect(status().isOk());
-    // fail testAuth
-    mockMvc.perform(get("/api/session")
-        .session(mockHttpSession))
-        .andExpect(status().isUnauthorized());
-    // login
-    mockMvc.perform(post("/api/session")
-        .content("{\"login\":\"testLogin\",\"password\":\"testPass\"}")
-        .contentType(MediaType.APPLICATION_JSON)
-        .session(mockHttpSession))
-        .andExpect(status().isOk());
-
-    // check info
-    mockMvc.perform(get("/api/user/" + userID)
-        .content("{\"login\":\"testLogin\",\"password\":\"testPass\"}")
-        .contentType(MediaType.APPLICATION_JSON)
-        .session(mockHttpSession))
-        .andExpect(status().isOk());
-    // fail check info
-    mockMvc.perform(get("/api/user/" + userID)
-        .content("{\"login\":\"testLogin\",\"password\":\"testPass\"}")
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isUnauthorized());
-    // fail change info
+  public void testFailChangeInfo() throws Exception {
     mockMvc.perform(put("/api/user/" + userID)
-        .content(
-            "{\"login\":\"testLogin1\",\"password\":\"testPass1\",\"email\":\"test@mail.ru1\"}")
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isForbidden());
-    // change info
-    mockMvc.perform(put("/api/user/" + userID)
-        .content(
-            "{\"login\":\"testLogin1\",\"password\":\"testPass1\",\"email\":\"test@mail.ru1\"}")
-        .contentType(MediaType.APPLICATION_JSON)
-        .session(mockHttpSession))
-        .andExpect(status().isOk());
-    // fail delete user
-    mockMvc.perform(delete("/api/user/" + userID))
-        .andExpect(status().isForbidden());
-    // delete user
-    mockMvc.perform(delete("/api/user/" + userID)
-        .session(mockHttpSession))
-        .andExpect(status().isOk());
+            .content(
+                    "{\"login\":\"testLogin_1\",\"password\":\"testPass_1\",\"email\":\"test@mail.ru_1\"}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .session(mockHttpSession))
+            .andExpect(status().isForbidden());
   }
+
+  @Test
+  public void testChangeInfo() throws Exception {
+    testLogin();
+    mockMvc.perform(put("/api/user/" + userID)
+            .content(
+                    "{\"login\":\"testLogin_1\",\"password\":\"testPass_1\",\"email\":\"test@mail.ru_1\"}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .session(mockHttpSession))
+            .andExpect(status().isOk());
+
+    testLogout();
+    // fail login under old login and password
+    mockMvc.perform(post("/api/session")
+            .content("{\"login\":\"testLogin\",\"password\":\"testPass\"}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .session(mockHttpSession))
+            .andExpect(status().isBadRequest());
+    // login under new login and password
+    mockMvc.perform(post("/api/session")
+            .content("{\"login\":\"testLogin_1\",\"password\":\"testPass_1\"}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .session(mockHttpSession))
+            .andExpect(status().isOk());
+  }
+
+  @Test
+  public void testFailDeleteUser() throws Exception {
+    mockMvc.perform(delete("/api/user/" + userID)
+            .session(mockHttpSession))
+            .andExpect(status().isForbidden());
+  }
+
+  @Test
+  public void testDeleteUser() throws Exception {
+    testLogin();
+    mockMvc.perform(delete("/api/user/" + userID)
+            .session(mockHttpSession))
+            .andExpect(status().isOk());
+
+    // fail login under delete user
+    mockMvc.perform(post("/api/session")
+            .content("{\"login\":\"testLogin\",\"password\":\"testPass\"}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .session(mockHttpSession))
+            .andExpect(status().isBadRequest());
+  }
+  
 }
