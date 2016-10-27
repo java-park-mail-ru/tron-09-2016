@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping(value = "/api/user")
+@SuppressWarnings("unused")
 public class UserController {
     private final UserService userService;
 

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping(value = "/api/session")
+@SuppressWarnings("unused")
 public class AuthorizationController {
     private final AuthorizationService authorizationService;
 
