@@ -29,7 +29,7 @@ public class UserDAOImpl implements UserDAO {
   @Nullable
   @Override
   public UserDataSet registration(UserDataSet user) {
-    Connection connection = DataSourceUtils.getConnection(dataSource);
+    final Connection connection = DataSourceUtils.getConnection(dataSource);
     final String query = "INSERT INTO Users(login, password, email) VALUES (?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query,
         Statement.RETURN_GENERATED_KEYS)) {
@@ -50,8 +50,8 @@ public class UserDAOImpl implements UserDAO {
 
   @Nullable
   @Override
-  public UserDataSet getUserInfo(long userId, String sessionId) {
-    Connection connection = DataSourceUtils.getConnection(dataSource);
+  public UserDataSet getUserInfo(long userId) {
+    final Connection connection = DataSourceUtils.getConnection(dataSource);
     final String query = "SELECT * FROM Users WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setLong(1, userId);
@@ -66,12 +66,12 @@ public class UserDAOImpl implements UserDAO {
 
   @Nullable
   @Override
-  public UserDataSet changeUserInfo(long userId, UserDataSet changesForUser, String sessionId) {
+  public UserDataSet changeUserInfo(long userId, UserDataSet changesForUser) {
     final String login = changesForUser.getLogin();
     final String password = changesForUser.getPassword();
     final String email = changesForUser.getEmail();
 
-    Connection connection = DataSourceUtils.getConnection(dataSource);
+    final Connection connection = DataSourceUtils.getConnection(dataSource);
     final String query = "UPDATE Users SET login = ?, password = ?, email = ? WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setString(1, login);
@@ -86,8 +86,8 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public int deleteUser(long userId, String sessionId) {
-    Connection connection = DataSourceUtils.getConnection(dataSource);
+  public int deleteUser(long userId) {
+    final Connection connection = DataSourceUtils.getConnection(dataSource);
 
     final String query = "DELETE FROM Users WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -103,7 +103,7 @@ public class UserDAOImpl implements UserDAO {
   @Nullable
   @Override
   public Long getIdByLogin(String login, String password) {
-    Connection connection = DataSourceUtils.getConnection(dataSource);
+    final Connection connection = DataSourceUtils.getConnection(dataSource);
     final String query = "SELECT * FROM Users WHERE login = ? AND password = ?";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setString(1, login);

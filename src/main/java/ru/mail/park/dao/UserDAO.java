@@ -9,11 +9,11 @@ import ru.mail.park.data.UserDataSet;
 public interface UserDAO {
     UserDataSet registration(UserDataSet user);
 
-    UserDataSet getUserInfo(long userId, String sessionId);
+    UserDataSet getUserInfo(long userId);
 
-    UserDataSet changeUserInfo(long userId, UserDataSet changesForUser, String sessionId);
+    UserDataSet changeUserInfo(long userId, UserDataSet changesForUser);
 
-    int deleteUser(long userId, String sessionId);
+    int deleteUser(long userId);
 
     Long getIdByLogin(String login, String password);
 }

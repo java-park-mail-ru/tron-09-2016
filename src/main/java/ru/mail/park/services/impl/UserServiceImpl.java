@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 @Service
 public class UserServiceImpl implements UserService {
     private static final BadResponse BAD_RESPONSE = new BadResponse(403, "Another user");
+    public static final String USER_ID = "userId";
 
     private UserDAO userDAO;
     private AuthorizationService authorizationService;
@@ -55,8 +56,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
         }
 
-        final String sessionId = httpSession.getId();
-        final UserDataSet user = userDAO.getUserInfo(userId, sessionId);
+        final UserDataSet user = userDAO.getUserInfo(userId);
         if (user != null) {
             return ResponseEntity.ok(user);
         }
@@ -73,8 +73,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
 
-        final String sessionId = httpSession.getId();
-        final Object object = httpSession.getAttribute(sessionId);
+        final Object object = httpSession.getAttribute(USER_ID);
         if (idCheck(object, userId) != Status.OK) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
@@ -85,7 +84,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
 
-        final UserDataSet user = userDAO.changeUserInfo(userId, changesForUser, sessionId);
+        final UserDataSet user = userDAO.changeUserInfo(userId, changesForUser);
         if (user != null) {
             return ResponseEntity.ok(user);
         }
@@ -100,15 +99,14 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
 
-        final String sessionId = httpSession.getId();
-        final Object object = httpSession.getAttribute(sessionId);
+        final Object object = httpSession.getAttribute(USER_ID);
         if (idCheck(object, userId) != Status.OK) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
 
-        final int code = userDAO.deleteUser(userId, sessionId);
+        final int code = userDAO.deleteUser(userId);
         if (code == Status.OK) {
-            httpSession.removeAttribute(sessionId);
+            httpSession.removeAttribute(USER_ID);
             return ResponseEntity.ok("{}");
         }
 
