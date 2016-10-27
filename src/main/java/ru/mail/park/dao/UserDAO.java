@@ -15,5 +15,5 @@ public interface UserDAO {
 
     int deleteUser(long userId, String sessionId);
 
-    Long getIdByLogin(UserDataSet user);
+    Long getIdByLogin(String login, String password);
 }
