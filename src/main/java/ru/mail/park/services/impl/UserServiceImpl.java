@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isEmpty(user.getLogin())
                 || StringUtils.isEmpty(user.getPassword())
                 || StringUtils.isEmpty(user.getEmail())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{Одна из строк isEmpty}");
         }
 
         final UserDataSet userReply = userDAO.registration(user);
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(userReply);
         }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{Возник SQLException}");
     }
 
     @Override
