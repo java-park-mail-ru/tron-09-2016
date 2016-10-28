@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isEmpty(user.getLogin())
                 || StringUtils.isEmpty(user.getPassword())
                 || StringUtils.isEmpty(user.getEmail())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{Одна из строк isEmpty}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(user);
         }
 
         final UserDataSet userReply = userDAO.registration(user);
