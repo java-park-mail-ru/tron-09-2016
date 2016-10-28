@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(userReply);
         }
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
     }
 
     @Override
