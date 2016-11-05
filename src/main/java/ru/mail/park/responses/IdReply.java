@@ -6,10 +6,6 @@ package ru.mail.park.responses;
 public class IdReply {
     private Long userId;
 
-    public IdReply() {
-        
-    }
-
     public IdReply(Long userId) {
         this.userId = userId;
     }

@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(userReply);
         }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{Возник SQLException}");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{Возник SQLException}");
     }
 
     @Override
