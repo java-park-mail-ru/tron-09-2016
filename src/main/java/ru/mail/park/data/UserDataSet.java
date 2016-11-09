@@ -52,7 +52,6 @@ public class UserDataSet {
         this.login = login;
     }
 
-    @SuppressWarnings("unused")
     public String getPassword() {
         return password;
     }

@@ -57,10 +57,10 @@ public class AuthorizationController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity logout(HttpSession httpSession) {
+    public String logout(HttpSession httpSession) {
         httpSession.removeAttribute(USER_ID);
 
-        return ResponseEntity.ok("{}");
+        return "{}";
     }
 
 }

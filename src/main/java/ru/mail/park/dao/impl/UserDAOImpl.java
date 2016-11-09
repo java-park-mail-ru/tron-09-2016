@@ -4,7 +4,6 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.mail.park.dao.UserDAO;
 import ru.mail.park.data.UserDataSet;
 import ru.mail.park.responses.Status;
@@ -17,7 +16,6 @@ import java.sql.*;
  */
 
 @Repository
-@Transactional
 public class UserDAOImpl implements UserDAO {
     protected DataSource dataSource;
 
