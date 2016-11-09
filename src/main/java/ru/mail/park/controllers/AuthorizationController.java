@@ -1,11 +1,14 @@
 package ru.mail.park.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import ru.mail.park.dao.UserDAO;
+import ru.mail.park.dao.impl.UserDAOImpl;
 import ru.mail.park.data.UserDataSet;
-import ru.mail.park.services.AuthorizationService;
-import ru.mail.park.services.impl.AuthorizationServiceImpl;
+import ru.mail.park.responses.IdReply;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,28 +18,49 @@ import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping(value = "/api/session")
-@SuppressWarnings("unused")
 public class AuthorizationController {
-    private final AuthorizationService authorizationService;
+    public static final String USER_ID = "userId";
+    private UserDAO userDAO;
 
     @Autowired
-    public AuthorizationController(AuthorizationServiceImpl authorizationServiceImpl) {
-        this.authorizationService = authorizationServiceImpl;
+    public AuthorizationController(UserDAOImpl userDAOImpl) {
+        this.userDAO = userDAOImpl;
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity login(@RequestBody UserDataSet body, HttpSession httpSession) {
-        return authorizationService.login(body, httpSession);
+        if (StringUtils.isEmpty(body.getLogin())
+                || StringUtils.isEmpty(body.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+        }
+
+        final Long userId = userDAO.getIdByLogin(body.getLogin(), body.getPassword());
+        if (userId != null) {
+            httpSession.setAttribute(USER_ID, userId);
+            final IdReply idReply = new IdReply(userId);
+            return ResponseEntity.ok(idReply);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity authorizationCheck(HttpSession httpSession) {
-        return authorizationService.authorizationCheck(httpSession);
+        final Object object = httpSession.getAttribute(USER_ID);
+        if (object instanceof Long) {
+            final Long userId = (Long) object;
+            final IdReply idReply = new IdReply(userId);
+            return ResponseEntity.ok(idReply);
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity logout(HttpSession httpSession) {
-        return authorizationService.logout(httpSession);
+        httpSession.removeAttribute(USER_ID);
+
+        return ResponseEntity.ok("{}");
     }
 
 }

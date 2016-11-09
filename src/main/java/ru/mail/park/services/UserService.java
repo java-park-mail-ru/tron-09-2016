@@ -1,19 +1,16 @@
 package ru.mail.park.services;
 
-import org.springframework.http.ResponseEntity;
 import ru.mail.park.data.UserDataSet;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * Created by zac on 23.10.16.
  */
 public interface UserService {
-    ResponseEntity registration(UserDataSet user);
+    UserDataSet registration(UserDataSet user);
 
-    ResponseEntity getUserInfo(long userId, HttpSession httpSession);
+    UserDataSet getUserInfo(long userId);
 
-    ResponseEntity changeUserInfo(long userId, UserDataSet changesForUser, HttpSession httpSession);
+    UserDataSet changeUserInfo(long userId, UserDataSet changesForUser);
 
-    ResponseEntity deleteUser(long userId, HttpSession httpSession);
+    int deleteUser(long userId);
 }
