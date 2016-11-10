@@ -3,7 +3,6 @@ package ru.mail.park.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.dao.UserDAO;
 import ru.mail.park.dao.UserDAOImpl;
@@ -29,9 +28,9 @@ public class AuthorizationController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity login(@RequestBody UserDataSet body, HttpSession httpSession) {
-        if (StringUtils.isEmpty(body.getLogin())
-                || StringUtils.isEmpty(body.getPassword())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+        final String status = Validation.getLoginPasswordStatus(body.getLogin(), body.getPassword());
+        if (!status.equals(Validation.CORRECT)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(status);
         }
 
         final Long userId = userDAO.getIdByLogin(body.getLogin(), body.getPassword());

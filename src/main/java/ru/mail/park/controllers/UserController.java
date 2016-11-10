@@ -3,7 +3,6 @@ package ru.mail.park.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.data.UserDataSet;
 import ru.mail.park.responses.BadResponse;
@@ -36,10 +35,13 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity registration(@RequestBody UserDataSet body) {
-        if (StringUtils.isEmpty(body.getLogin())
-                || StringUtils.isEmpty(body.getPassword())
-                || StringUtils.isEmpty(body.getEmail())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+        final String status = Validation.getLoginPasswordEmailStatus(
+                body.getLogin(),
+                body.getPassword(),
+                body.getEmail()
+        );
+        if (!status.equals(Validation.CORRECT)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(status);
         }
 
         final UserDataSet userReply = userService.registration(body);
@@ -79,10 +81,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
         }
 
-        if (StringUtils.isEmpty(body.getLogin())
-                || StringUtils.isEmpty(body.getPassword())
-                || StringUtils.isEmpty(body.getEmail())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BAD_RESPONSE);
+        final String status = Validation.getLoginPasswordEmailStatus(
+                body.getLogin(),
+                body.getPassword(),
+                body.getEmail()
+        );
+        if (!status.equals(Validation.CORRECT)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(status);
         }
 
         final UserDataSet user = userService.changeUserInfo(userId, body);

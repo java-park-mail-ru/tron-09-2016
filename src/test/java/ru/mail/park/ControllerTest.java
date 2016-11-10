@@ -144,7 +144,7 @@ public class ControllerTest {
         testLogin();
         mockMvc.perform(put("/api/user/" + userID)
                 .content(
-                        "{\"login\":\"testLogin_1\",\"password\":\"testPass_1\",\"email\":\"test@mail.ru_1\"}")
+                        "{\"login\":\"testLogin_1\",\"password\":\"testPass_1\",\"email\":\"test_1@mail.ru\"}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .session(mockHttpSession))
                 .andExpect(status().isOk());
