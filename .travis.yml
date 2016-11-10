@@ -1,0 +1,9 @@
+services:
+  - mysql
+before_script:
+  - mysql -u root -e "create database TronDB;"
+  - mysql -u root -e "create user 'TronDB'@'localhost' identified by 'TronDB';"
+  - mysql -u root -e "grant all privileges on TronDB. * to 'TronDB'@'localhost';"
+language: java
+jdk:
+- oraclejdk8
