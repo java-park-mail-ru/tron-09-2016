@@ -9,7 +9,7 @@ import ru.mail.park.data.UserDataSet;
 import ru.mail.park.responses.BadResponse;
 import ru.mail.park.responses.Status;
 import ru.mail.park.services.UserService;
-import ru.mail.park.services.impl.UserServiceImpl;
+import ru.mail.park.services.UserServiceImpl;
 
 import javax.servlet.http.HttpSession;
 

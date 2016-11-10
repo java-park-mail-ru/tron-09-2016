@@ -1,10 +1,9 @@
-package ru.mail.park.dao.impl;
+package ru.mail.park.dao;
 
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
-import ru.mail.park.dao.UserDAO;
 import ru.mail.park.data.UserDataSet;
 import ru.mail.park.responses.Status;
 

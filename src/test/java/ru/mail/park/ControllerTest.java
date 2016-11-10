@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.mail.park.dao.impl.UserDAOImpl;
+import ru.mail.park.dao.UserDAOImpl;
 
 /**
  * Created by zac on 26.10.16.

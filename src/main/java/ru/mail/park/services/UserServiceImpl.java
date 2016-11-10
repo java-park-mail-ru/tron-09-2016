@@ -1,11 +1,10 @@
-package ru.mail.park.services.impl;
+package ru.mail.park.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mail.park.dao.UserDAO;
-import ru.mail.park.dao.impl.UserDAOImpl;
+import ru.mail.park.dao.UserDAOImpl;
 import ru.mail.park.data.UserDataSet;
-import ru.mail.park.services.UserService;
 
 /**
  * Created by zac on 23.10.16.

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.dao.UserDAO;
-import ru.mail.park.dao.impl.UserDAOImpl;
+import ru.mail.park.dao.UserDAOImpl;
 import ru.mail.park.data.UserDataSet;
 import ru.mail.park.responses.IdReply;
 
