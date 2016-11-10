@@ -2,6 +2,7 @@ package ru.mail.park.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.mail.park.dao.UserDAO;
 import ru.mail.park.dao.UserDAOImpl;
 import ru.mail.park.data.UserDataSet;
@@ -11,6 +12,7 @@ import ru.mail.park.data.UserDataSet;
  */
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
 
